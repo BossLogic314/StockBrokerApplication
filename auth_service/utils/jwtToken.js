@@ -16,9 +16,9 @@ export let generateJwtTokenAndPutInCookie = (jsonObj, res) => {
 export let verifyJwtToken = (jwtToken) => {
     try {
         const result = jwt.verify(jwtToken, ACCESS_TOKEN_SECRET);
-        return result.secretAccessToken;
+        return result.accessToken;
     }
-    catch(err) {
+    catch(error) {
         return null;
     }
 };

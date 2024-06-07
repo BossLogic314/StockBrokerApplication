@@ -7,6 +7,6 @@ const jsonParser = bodyParser.json();
 
 router.get('/getLoginUrl', jsonParser, getLoginUrl);
 router.get('/getAccessTokenInCookie', jsonParser, getAccessTokenInCookie);
-router.get('/verifyJwtToken', jsonParser, checkJwtToken);
+router.post('/checkJwtToken', jsonParser, checkJwtToken);
 
 export default router;
