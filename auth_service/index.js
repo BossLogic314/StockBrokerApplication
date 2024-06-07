@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import loginRouter from './routes/login.js';
+import loginRouter from './routes/authentication.js';
 
 const app = express();
 const PORT = 8085;
@@ -13,7 +13,7 @@ app.use(cors({
     credentials: true,
     origin: ["http://localhost:3000"]
 }));
-app.use('/login', loginRouter);
+app.use('/authentication', loginRouter);
 
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);

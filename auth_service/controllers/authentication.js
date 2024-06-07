@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { generateJwtTokenAndPutInCookie } from '../utils/jwtToken.js'
+import { generateJwtTokenAndPutInCookie, verifyJwtToken } from '../utils/jwtToken.js'
 
 const url = 'https://api.upstox.com/v2/login/authorization/token';
 const headers = {
@@ -41,3 +41,19 @@ export let getAccessTokenInCookie = (async (req, res) => {
         res.status(500).json({message: error.message});
     });
 });
+
+export let checkJwtToken = async (req, res) => {
+    try {
+        const jwtToken = req.cookies.jwt;
+        const secretAccessToken = verifyJwtToken(jwtToken);
+        if (secretAccessToken) {
+            res.status(200).json({response: true});
+        }
+        else {
+            res.status(401).json({message: "User unauthorized"});
+        }
+    }
+    catch(error) {
+        res.status(401).json({message: "User unauthorized"});
+    }
+}
