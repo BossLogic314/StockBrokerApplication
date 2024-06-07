@@ -12,7 +12,7 @@ export let generateJwtTokenAndPutInCookie = (jsonObj, res) => {
     }
 }
 
-// Returns the username of the user
+// Returns the access token from the cookie
 export let verifyJwtToken = (jwtToken) => {
     try {
         const result = jwt.verify(jwtToken, ACCESS_TOKEN_SECRET);
