@@ -17,6 +17,10 @@ export default function WatchListsSection() {
                     Sensex
                 </div>
             </div>
+
+            <div className="watchLists">
+                
+            </div>
         </div>
     );
 }
