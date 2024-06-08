@@ -23,12 +23,13 @@ export const getUserInformation = (async (req, res) => {
       'Accept': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     };
-  
+
     axios.get(url, { headers })
       .then(response => {
-        res.status(200).json({data: response.data});
+        res.status(200).json({response: response.data});
       })
       .catch(error => {
+        console.log(error);
         res.status(500).json({message: "Server error!"});
       });
 });
