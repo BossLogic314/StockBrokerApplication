@@ -32,7 +32,7 @@ export default function UserProfile() {
     console.log(userData);
     return (
         <div className="userProfileButton mr-[15px] flex grow justify-end">
-            <div className="imageDiv h-full w-full h-[55px] w-[55px]">
+            <div className="imageDiv h-full w-[55px] h-[55px] w-[55px]">
                 <img className="rounded-full border-black border-[1px] hover:cursor-pointer hover:scale-[1.03] active:scale-[1]"
                 src="https://chat-application-display-pictures-bucket.s3.ap-south-1.amazonaws.com/default.jpg"
                 onClick={userProfileClicked}>
