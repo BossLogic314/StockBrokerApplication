@@ -1,8 +1,8 @@
 "use client";
 import { useEffect } from 'react';
-import './styles/Dashboard.css';
 import WatchListsSection from './WatchListsSection';
 import ChartsSection from './ChartsSection';
+import './styles/Dashboard.css';
 
 export default function Dashboard() {
 

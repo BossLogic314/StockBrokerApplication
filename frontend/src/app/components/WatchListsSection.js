@@ -3,19 +3,25 @@ import { useEffect, useState } from 'react';
 import { useUserDataStore } from '../../../zustand/useUserDataStore';
 import { useLoadingStore } from '../../../zustand/useLoadingStore';
 import { useAddScripDropdownStore } from '../../../zustand/useAddScripDropdownStore';
-import { useCurrentWatchListStore } from '../../../zustand/useCurrentWatchListStore';
+import { useWatchListStore } from '../../../zustand/useWatchListStore';
+import { useShowDeleteWatchListWarningStore } from '../../../zustand/useShowDeleteWatchListWarningStore';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import AddScriptDropdown from './AddScripDropdown';
+import DeleteWatchListWarning from './DeleteWatchListWarning';
 import './styles/WatchListsSection.css';
 
 export default function WatchListsSection() {
 
     const {userData, setUserData} = useUserDataStore();
     const {loading, setLoading} = useLoadingStore();
-    const [watchLists, setWatchLists] = useState([]);
-    const {currentWatchList, setCurrentWatchList, currentWatchListIndex, setCurrentWatchListIndex, deleteStockFromCurrentWatchList} = useCurrentWatchListStore();
+    //const [watchLists, setWatchLists] = useState([]);
+    const {watchLists, setWatchLists, currentWatchList, setCurrentWatchList,
+            currentWatchListIndex, setCurrentWatchListIndex, deleteStockFromCurrentWatchList} = useWatchListStore();
     const [hoveringStockIndex, setHoveringStockIndex] = useState(-1);
+    const [hoveringOnWatchListName, setHoveringOnWatchListName] = useState(false);
+    const [editingWatchListName, setEditingWatchListName] = useState(false);
+    const { showDeleteWatchListWarning, setShowDeleteWatchListWarning } = useShowDeleteWatchListWarningStore();
     const {displayAddScripsDropdown, setDisplayAddScripsDropdown} = useAddScripDropdownStore();
     const router = useRouter();
 
@@ -23,7 +29,7 @@ export default function WatchListsSection() {
 
         // If the user data has not loaded yet
         if (loading) {
-            return;
+            return null;
         }
 
         try {
@@ -31,7 +37,8 @@ export default function WatchListsSection() {
             {
                 withCredentials: true
             });
-            setWatchLists(response.data.watchLists.watchLists);
+            setWatchLists(response.data.watchLists);
+            return response.data.watchLists;
         }
         // The user needs to login again
         catch(error) {
@@ -45,8 +52,27 @@ export default function WatchListsSection() {
         setCurrentWatchList(watchLists[index]);
     }
 
+    const editWatchListNameButtonClicked = (event) => {
+        //console
+    }
+
+    const deleteWatchListButtonClicked = (event) => {
+        setShowDeleteWatchListWarning(true);
+    }
+
     const addScripButtonClicked = (event) => {
         setDisplayAddScripsDropdown(true);
+    }
+
+    const addNewWatchList = (event) => {
+    }
+
+    const hoveringOnWatchList = (event) => {
+        setHoveringOnWatchListName(true);
+    }
+
+    const notHoveringOnWatchList = (event) => {
+        setHoveringOnWatchListName(false);
     }
 
     const hoveringOnStock = (event) => {
@@ -59,25 +85,54 @@ export default function WatchListsSection() {
     }
 
     const buyStock = (event) => {
-        console.log(hoveringStockIndex);
+        console.log('Buy stock clicked');
     }
 
     const sellStock = (event) => {
-        console.log(hoveringStockIndex);
+        console.log('Sell stock clicked');
     }
 
-    const deleteStockFromWatchList = (event) => {
+    const deleteStockFromWatchList = async (event) => {
+
+        const instrumentKey = event.target.getAttribute('instrument-key');
+        // Deleting the stock from the watchlist in the database
+        try {
+            const response = await axios.post('http://localhost:8087/watchLists/deleteStockFromWatchList',
+            {
+                userId: userData.user_id,
+                watchListIndex: currentWatchListIndex,
+                instrumentKey: instrumentKey
+            },
+            {
+                withCredentials: true
+            });
+        }
+        // The user needs to login again
+        catch(error) {
+            router.replace('/');
+        }
+
         deleteStockFromCurrentWatchList(currentWatchList.stocks[hoveringStockIndex]);
         setHoveringStockIndex(null);
+
+        // Get all watchlists from the database once again
+        getWatchLists();
+    }
+
+    const getWatchListsAndSetCurrentWatchList = async () => {
+        const watchLists = await getWatchLists();
+        if (watchLists && watchLists.length != 0) {
+            setCurrentWatchList(watchLists[0]);
+        }
     }
 
     useEffect(() => {
 
-        getWatchLists();
+        getWatchListsAndSetCurrentWatchList();
     }, [loading]);
 
     return (
-        <div className="watchListsSection h-full w-[340px] min-w-[340px] border-black border-[1px]">
+        <div className="stocksSection h-full w-[340px] min-w-[340px] border-black border-[1px]">
             <div className="stockExchangesStatsSection flex flex-row">
                 <div className="niftySection h-[60px] w-[50%] border-black border-[1px]">
                     Nifty
@@ -87,7 +142,7 @@ export default function WatchListsSection() {
                 </div>
             </div>
 
-            <div className="watchListsDiv h-[50px] flex flex-row items-end border-black border-[1px]">
+            <div className="watchListsDiv h-[50px] flex flex-row items-end border-green-600 border-[1px]">
                 <div className="watchLists w-[90%] text-[17px] h-[80%] ml-[5px] overflow-x-auto overflow-y-hidden border-black border-[1px]">
                     {
                         watchLists.map((element, index) => (
@@ -99,7 +154,8 @@ export default function WatchListsSection() {
                     }
                 </div>
 
-                <div className="addWatchListDiv h-[30px] w-[30px] text-[30px] font-[300] mx-[5px] flex justify-center items-center hover:cursor-pointer border-black border-[1px]">
+                <div className="addWatchListDiv h-[30px] w-[30px] text-[30px] font-[300] mx-[5px] flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
+                onClick={addNewWatchList}>
                     +
                 </div>
             </div>
@@ -108,21 +164,40 @@ export default function WatchListsSection() {
                 {
                     currentWatchList != null ?
                     (
-                        <div className="currentWatchListInformation h-[40px] flex flex-row">
-                            <div className="currentWatchListNameDiv max-w-[70%] pl-[5px] pr-[5px] flex items-center border-black border-[1px]">
-                                <div className="currentWatchListName text-[18px]">{currentWatchList.name}</div>
+                        <div className="currentWatchListInformation h-[40px] flex flex-row"
+                        onMouseEnter={hoveringOnWatchList} onMouseLeave={notHoveringOnWatchList}>
+                            <div className="currentWatchListNameDiv max-w-[65%] pl-[5px] pr-[5px] flex items-center border-black border-[1px]">
+                                <div className="currentWatchListName text-[18px] truncate ...">{currentWatchList.name}</div>
                             </div>
 
-                            <div className="currentWatchListStocksNumberDiv flex items-center">
-                                <div className="currentWatchListStocksNumber text-[15px] font-[500] rounded-[5px] border-black border-[1px]">{currentWatchList.stocks.length}/20</div>
-                            </div>
+                            {
+                                hoveringOnWatchListName ?
+                                (
+                                    <div className="editWatchListOptionsDiv min-w-[35%] flex flex-row items-center grow justify-end border-blue-400 border-[1px]">
+                                        <div className="editWatchListOptions mr-[5px] flex flex-row border-red-400 border-[1px]">
+                                            <div className="editWatchListNameButton h-[28px] w-[28px] mr-[8px] text-[30px] font-[350] text-center flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
+                                            onClick={editWatchListNameButtonClicked}>
+                                                E
+                                            </div>
 
-                            <div className="editWatchListOptions mr-[10px] flex flex-row items-center grow justify-end">
-                                <div className="addScripButton h-[28px] w-[28px] text-[30px] font-[350] text-center flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
-                                onClick={addScripButtonClicked}>
-                                    +
-                                </div>
-                            </div>
+                                            <div className="deleteWatchListButton h-[28px] w-[28px] mr-[8px] text-[30px] font-[350] text-center flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
+                                            onClick={deleteWatchListButtonClicked}>
+                                                D
+                                            </div>
+                                            
+                                            <div className="addScripButton h-[28px] w-[28px] text-[30px] font-[350] text-center flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
+                                            onClick={addScripButtonClicked}>
+                                                +
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) :
+                                (
+                                    <div className="currentWatchListStocksNumberDiv flex items-center">
+                                        <div className="currentWatchListStocksNumber text-[15px] font-[500] rounded-[5px] border-black border-[1px]">{currentWatchList.stocks.length}/20</div>
+                                    </div>
+                                )
+                            }
                         </div>
                     ) :
                     <></>
@@ -151,7 +226,10 @@ export default function WatchListsSection() {
                                         <div className="stockEditOptions flex flex-row grow h-full justify-center items-center z-2 border-black border-[1px]">
                                             <div className="buy border-black border-[1px] mx-[5px] px-[5px]" onClick={buyStock}>B</div>
                                             <div className="sell border-black border-[1px] mx-[5px] px-[5px]" onClick={sellStock}>S</div>
-                                            <div className="delete border-black border-[1px] ml-[5px] mr-[10px] px-[5px]" onClick={deleteStockFromWatchList}>D</div>
+                                            <div className="delete border-black border-[1px] ml-[5px] mr-[10px] px-[5px]"
+                                            instrument-key={element.instrumentKey} onClick={deleteStockFromWatchList}>
+                                                D
+                                            </div>
                                         </div>
                                     )
                                 }
@@ -163,7 +241,12 @@ export default function WatchListsSection() {
             </div>
             {
                 displayAddScripsDropdown ?
-                <AddScriptDropdown /> :
+                <AddScriptDropdown getWatchLists={getWatchLists} /> :
+                <></>
+            }
+            {
+                showDeleteWatchListWarning ?
+                <DeleteWatchListWarning getWatchLists={getWatchLists} /> :
                 <></>
             }
         </div>

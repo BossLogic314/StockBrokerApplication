@@ -1,6 +1,8 @@
 import { create } from "zustand";
 
-const currentWatchListStore = (set, get) => ({
+const watchListStore = (set, get) => ({
+    watchLists: [],
+    setWatchLists: (newWatchLists) => set({watchLists: newWatchLists}),
     currentWatchList: null,
     setCurrentWatchList: (newCurrentWatchList) => set({currentWatchList: newCurrentWatchList}),
     currentWatchListIndex: 0,
@@ -37,4 +39,4 @@ const currentWatchListStore = (set, get) => ({
     }
 });
 
-export const useCurrentWatchListStore = create(currentWatchListStore);
+export const useWatchListStore = create(watchListStore);

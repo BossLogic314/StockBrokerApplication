@@ -2,15 +2,16 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAddScripDropdownStore } from '../../../zustand/useAddScripDropdownStore';
-import { useCurrentWatchListStore } from '../../../zustand/useCurrentWatchListStore';
+import { useWatchListStore } from '../../../zustand/useWatchListStore';
+import { useUserDataStore } from '../../../zustand/useUserDataStore';
 import { useRouter } from 'next/navigation';
 import './styles/AddScripDropdown.css';
 
-export default function AddScripDropdown() {
+export default function AddScripDropdown({ getWatchLists }) {
 
+    const {userData} = useUserDataStore();
     const {setDisplayAddScripsDropdown} = useAddScripDropdownStore();
-    const {currentWatchList} = useCurrentWatchListStore();
-    const {addStockToCurrentWatchList} = useCurrentWatchListStore();
+    const {currentWatchList, currentWatchListIndex, addStockToCurrentWatchList} = useWatchListStore();
     const [scripsToPrompt, setScripsToPrompt] = useState([]);
     const router = useRouter();
 
@@ -40,7 +41,7 @@ export default function AddScripDropdown() {
         setDisplayAddScripsDropdown(false);
     }
 
-    const addScriptClicked = (event) => {
+    const addScriptClicked = async(event) => {
 
         if (currentWatchList.stocks.length == 20) {
             alert('Cannot add more stocks to the watchlist');
@@ -52,13 +53,36 @@ export default function AddScripDropdown() {
         const type = event.target.getAttribute('type');
         const name = event.target.getAttribute('name');
 
+        // Adding the stock in the watchlist in the database
+        try {
+            const response = await axios.post('http://localhost:8087/watchLists/addStockToWatchList',
+            {
+                userId: userData.user_id,
+                watchListIndex: currentWatchListIndex,
+                instrumentKey: instrumentKey,
+                name: name,
+                instrumentType: type,
+                exchange: exchange
+            },
+            {
+                withCredentials: true
+            });
+        }
+        // The user needs to login again
+        catch(error) {
+            router.replace('/');
+        }
+
         const stockToAdd = {
-            exchange: exchange,
             instrumentKey: instrumentKey,
             name: name,
-            type: type
+            type: type,
+            exchange: exchange
         }
         addStockToCurrentWatchList(stockToAdd);
+
+        // Get all watchlists from the database once again
+        await getWatchLists();
     }
 
     useEffect(() => {

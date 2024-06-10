@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-let watchListsSchema = {
+let userSchema = {
     userId: String,
     watchLists: [
         {
@@ -16,6 +16,6 @@ let watchListsSchema = {
     ]
 }
 
-let watchListsModel = mongoose.model('WatchLists', watchListsSchema, 'WatchLists');
+let userModel = mongoose.model('Users', userSchema, 'Users');
 
-export default watchListsModel;
+export default userModel;
