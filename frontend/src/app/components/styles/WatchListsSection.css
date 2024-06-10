@@ -1,0 +1,25 @@
+#moveToLeftFrame {
+    border-top: 12px solid transparent;
+	border-right: 24px solid rgb(21, 21, 23);
+	border-bottom: 12px solid transparent;
+}
+
+#moveToRightFrame {
+    border-top: 12px solid transparent;
+	border-left: 24px solid rgb(21, 21, 23);
+	border-bottom: 12px solid transparent;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+	height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: #dedcdc; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: #949191; 
+    height: 10px;
+}

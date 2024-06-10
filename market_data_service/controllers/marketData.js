@@ -40,3 +40,42 @@ export const getOHLCData = (async (req, res) => {
       res.status(500).json({message: "Server error!"});
     });
 });
+
+export const getScrips = (async (req, res) => {
+
+  let accessToken = null;
+  try {
+    const jwtToken = req.cookies.jwt;
+    accessToken = verifyJwtToken(jwtToken);
+
+    if (!accessToken) {
+      res.status(401).json({message: "User unauthorized!"});
+      return;
+    }
+  }
+  catch(error) {
+    res.status(401).json({message: "User unauthorized!"});
+    return;
+  }
+
+  try {
+    const searchString = req.query.searchString;
+    const response = await openSearchClient.search({
+      index: "stocks",
+      body: {
+        query: {
+          match: {
+            name: {
+              query: searchString,
+              fuzziness: "AUTO"
+            }
+          }
+        }
+      }
+    });
+    res.status(200).json({scrips: response});
+  }
+  catch(error) {
+    res.status(500).json({message: "Server error!"});
+  }
+});

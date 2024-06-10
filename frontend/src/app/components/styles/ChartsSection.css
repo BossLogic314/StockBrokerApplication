@@ -1,0 +1,3 @@
+#charts:hover, #orders:hover, #positions:hover, #holdings:hover {
+    border-bottom: solid 3px rgb(38, 134, 245);
+}
