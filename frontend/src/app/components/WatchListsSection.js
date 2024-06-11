@@ -15,13 +15,13 @@ export default function WatchListsSection() {
 
     const {userData, setUserData} = useUserDataStore();
     const {loading, setLoading} = useLoadingStore();
-    //const [watchLists, setWatchLists] = useState([]);
     const {watchLists, setWatchLists, currentWatchList, setCurrentWatchList,
             currentWatchListIndex, setCurrentWatchListIndex, deleteStockFromCurrentWatchList} = useWatchListStore();
     const [hoveringStockIndex, setHoveringStockIndex] = useState(-1);
     const [hoveringOnWatchListName, setHoveringOnWatchListName] = useState(false);
     const [editingWatchListName, setEditingWatchListName] = useState(false);
-    const { showDeleteWatchListWarning, setShowDeleteWatchListWarning } = useShowDeleteWatchListWarningStore();
+    const [newWatchListName, setNewWatchListName] = useState('');
+    const {showDeleteWatchListWarning, setShowDeleteWatchListWarning} = useShowDeleteWatchListWarningStore();
     const {displayAddScripsDropdown, setDisplayAddScripsDropdown} = useAddScripDropdownStore();
     const router = useRouter();
 
@@ -47,12 +47,16 @@ export default function WatchListsSection() {
     });
 
     const watchListClicked = (event) => {
+        // If the user was editing some watchlists's name
+        cancelChangeOfWatchListName();
+
         const index = event.target.getAttribute('index');
         setCurrentWatchListIndex(index);
         setCurrentWatchList(watchLists[index]);
     }
 
     const editWatchListNameButtonClicked = (event) => {
+        setNewWatchListName(currentWatchList.name);
         setEditingWatchListName(true);
     }
 
@@ -143,6 +147,48 @@ export default function WatchListsSection() {
         }
     }
 
+    const changeWatchListName = async (event) => {
+
+        try {
+            // Changing the watchlist name in the database
+            const response = await axios.post('http://localhost:8087/watchLists/changeWatchListName',
+            {
+                userId: userData.user_id,
+                newWatchListName: newWatchListName,
+                watchListIndex: currentWatchListIndex
+            },
+            {
+                withCredentials: true
+            });
+
+            // Fetching watchlists after updating the name
+            const newWatchLists = await getWatchLists();
+
+            // Re-render the current watchlist
+            setCurrentWatchList(newWatchLists[currentWatchListIndex]);
+
+            // The user is not editing the watchlist's name anymore
+            cancelChangeOfWatchListName();
+        }
+        // The user needs to login again
+        catch(error) {
+            router.replace('/');
+        }
+    }
+
+    const newWatchListNameChanged = (event) => {
+        setNewWatchListName(event.target.value);
+    }
+
+    const cancelChangeOfWatchListName = () => {
+        setNewWatchListName('');
+        setEditingWatchListName(false);
+    }
+
+    const stockClicked = (event) => {
+        cancelChangeOfWatchListName();
+    }
+
     useEffect(() => {
 
         getWatchListsAndSetCurrentWatchList();
@@ -225,7 +271,8 @@ export default function WatchListsSection() {
                         currentWatchList.stocks.map((element, index) =>
                         (
                             <div className="stock h-[60px] flex flex-row border-black border-[1px] hover:cursor-pointer"
-                            key={index} index={index} onMouseEnter={hoveringOnStock} onMouseLeave={notHoveringOnStock}>
+                            key={index} index={index} onMouseEnter={hoveringOnStock} onMouseLeave={notHoveringOnStock}
+                            onClick={stockClicked}>
                                 <div className="stockInformation w-[80%] flex flex-col justify-center px-[5px]" index={index}>
                                     <div className="name text-[17px] font-[450]" index={index}>{element.name}</div>
                                     <div className="instrumentKey text-[12px] font-[360]" index={index}>{element.instrumentKey}</div>
@@ -264,6 +311,25 @@ export default function WatchListsSection() {
             {
                 showDeleteWatchListWarning ?
                 <DeleteWatchListWarning getWatchLists={getWatchLists} /> :
+                <></>
+            }
+            {
+                editingWatchListName ?
+                (
+                    <div className="editWatchListNameDiv flex flex-row items-center fixed bg-blue-300 top-[110px] h-[40px] w-[340px] z-2 border-red-600 border-[1px]">
+                        <input className="editWatchListName text-[15px] ml-[3%] px-[5px] border-black border-[1px] h-[80%] w-[70%]"
+                        id="editWatchListName" defaultValue={newWatchListName} onChange={newWatchListNameChanged} autoFocus>
+                        </input>
+                        <div className="tick h-[80%] w-[10%] ml-[2%] pt-[2px] text-center hover:cursor-pointer border-black border-[1px]"
+                        onClick={changeWatchListName}>
+                            Y
+                        </div>
+                        <div className="cross h-[80%] w-[10%] ml-[2%] pt-[2px] text-center hover:cursor-pointer border-black border-[1px]"
+                        onClick={cancelChangeOfWatchListName}>
+                            N
+                        </div>
+                    </div>
+                ) :
                 <></>
             }
         </div>

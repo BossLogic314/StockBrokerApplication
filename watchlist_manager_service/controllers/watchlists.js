@@ -181,3 +181,38 @@ export const deleteWatchList = (async (req, res) => {
     res.status(500).json({message: error.message});
   }
 });
+
+export const changeWatchListName = (async (req, res) => {
+
+  let accessToken = null;
+  try {
+    const jwtToken = req.cookies.jwt;
+    accessToken = verifyJwtToken(jwtToken);
+
+    if (!accessToken) {
+      res.status(401).json({message: "User unauthorized!"});
+      return;
+    }
+  }
+  catch(error) {
+    res.status(401).json({message: "User unauthorized!"});
+    return;
+  }
+
+  try {
+    const userId = req.body.userId;
+    const newWatchListName = req.body.newWatchListName;
+    const watchListIndex = req.body.watchListIndex;
+
+    const user = await userModel.findOne({userId: userId});
+
+    // Changing the watchlist's name
+    user.watchLists[watchListIndex].name = newWatchListName;
+    await user.save();
+
+    res.status(200).json({message: "Successfully change the watchlist's name!"});
+  }
+  catch(error) {
+    res.status(500).json({message: error.message});
+  }
+});
