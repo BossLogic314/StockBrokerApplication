@@ -53,7 +53,7 @@ export default function WatchListsSection() {
     }
 
     const editWatchListNameButtonClicked = (event) => {
-        //console
+        setEditingWatchListName(true);
     }
 
     const deleteWatchListButtonClicked = (event) => {
@@ -201,7 +201,7 @@ export default function WatchListsSection() {
                                             onClick={deleteWatchListButtonClicked}>
                                                 D
                                             </div>
-                                            
+
                                             <div className="addScripButton h-[28px] w-[28px] text-[30px] font-[350] text-center flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
                                             onClick={addScripButtonClicked}>
                                                 +

@@ -34,7 +34,6 @@ export default function DeleteWatchListWarning({getWatchLists}) {
 
         // Updating watchlists and the current watchlist
         const newWatchLists = await getWatchLists();
-        console.log(newWatchLists);
         if (newWatchLists == []) {
             setCurrentWatchList(null);
         }
