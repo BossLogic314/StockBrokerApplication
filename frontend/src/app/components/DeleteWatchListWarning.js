@@ -32,7 +32,7 @@ export default function DeleteWatchListWarning({getWatchLists}) {
             router.replace('/');
         }
 
-        // Updating the watchlists and the current watchlist
+        // Updating watchlists and the current watchlist
         const newWatchLists = await getWatchLists();
         console.log(newWatchLists);
         if (newWatchLists == []) {

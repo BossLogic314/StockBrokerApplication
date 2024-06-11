@@ -4,6 +4,7 @@ let userSchema = {
     userId: String,
     watchLists: [
         {
+            name: String,
             stocks: [
                 {
                     instrumentKey: String,

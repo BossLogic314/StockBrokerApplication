@@ -64,7 +64,24 @@ export default function WatchListsSection() {
         setDisplayAddScripsDropdown(true);
     }
 
-    const addNewWatchList = (event) => {
+    const addNewWatchList = async(event) => {
+        try {
+            const response = await axios.post('http://localhost:8087/watchLists/addWatchList',
+            {
+                userId: userData.user_id
+            },
+            {
+                withCredentials: true
+            });
+        }
+        // The user needs to login again
+        catch(error) {
+            router.replace('/');
+        }
+
+        // Updating watchlists and the current watchlist
+        const newWatchLists = await getWatchLists();
+        setCurrentWatchListIndex(newWatchLists.length - 1);
     }
 
     const hoveringOnWatchList = (event) => {
