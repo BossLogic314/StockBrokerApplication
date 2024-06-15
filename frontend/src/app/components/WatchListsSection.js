@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import AddScriptDropdown from './AddScripDropdown';
 import DeleteWatchListWarning from './DeleteWatchListWarning';
+import io from "socket.io-client";
 import './styles/WatchListsSection.css';
 
 export default function WatchListsSection() {
@@ -23,6 +24,14 @@ export default function WatchListsSection() {
     const [newWatchListName, setNewWatchListName] = useState('');
     const {showDeleteWatchListWarning, setShowDeleteWatchListWarning} = useShowDeleteWatchListWarningStore();
     const {displayAddScripsDropdown, setDisplayAddScripsDropdown} = useAddScripDropdownStore();
+    const [socket, setSocket] = useState(null);
+    const [liveMarketData, setLiveMarketData] = useState([]);
+    const [headerStocks, setHeaderStocks] = useState(
+        [
+            {exchange: 'NSE_INDEX', instrumentKey: 'NSE_INDEX|Nifty 50', name: 'NIFTY 50'},
+            {exchange: 'BSE_INDEX', instrumentKey: 'BSE_INDEX|SENSEX', name: 'SENSEX'}
+        ]
+    );
     const router = useRouter();
 
     const getWatchLists = (async () => {
@@ -137,14 +146,7 @@ export default function WatchListsSection() {
         setHoveringStockIndex(null);
 
         // Get all watchlists from the database once again
-        getWatchLists();
-    }
-
-    const getWatchListsAndSetCurrentWatchList = async () => {
-        const watchLists = await getWatchLists();
-        if (watchLists && watchLists.length != 0) {
-            setCurrentWatchList(watchLists[0]);
-        }
+        await getWatchLists();
     }
 
     const changeWatchListName = async (event) => {
@@ -189,27 +191,134 @@ export default function WatchListsSection() {
         cancelChangeOfWatchListName();
     }
 
+    const getWatchListsAndSetCurrentWatchList = async () => {
+        const watchLists = await getWatchLists();
+        if (watchLists && watchLists.length != 0) {
+            setCurrentWatchList(watchLists[0]);
+        }
+    }
+
+    const getLiveMarketData = async () => {
+
+        // The current watchlist is not loaded yet
+        if (currentWatchList == null) {
+            return;
+        }
+        const newSocket = io('http://localhost:8086/');
+
+        newSocket.on('market data', (liveMarketData) => {
+            setLiveMarketData(JSON.parse(liveMarketData));
+        });
+
+        setSocket(newSocket);
+
+        let accessToken = null;
+        // Getting the access token
+        try {
+            const response = await axios.get('http://localhost:8088/user/getAccessToken',
+            {
+                withCredentials: true
+            });
+            accessToken = response.data.accessToken;
+        }
+        // The user has to login again
+        catch(error) {
+            router.replace('/');
+        }
+
+        const instrumentKeys = currentWatchList.stocks.map(element => element.instrumentKey);
+        for (let i = 0; i < headerStocks.length; ++i) {
+            instrumentKeys.push(headerStocks[i].instrumentKey);
+        }
+
+        newSocket.emit('market data',
+        {
+            accessToken: accessToken,
+            instrumentKeys: instrumentKeys
+        });
+    }
+
     useEffect(() => {
 
         getWatchListsAndSetCurrentWatchList();
     }, [loading]);
 
+    // When the current watchlist changes
+    useEffect(() => {
+        // Establish a web socket connection to get live market data
+        getLiveMarketData();
+    }, [currentWatchList]);
+
     return (
         <div className="stocksSection h-full w-[340px] min-w-[340px] border-black border-[1px]">
             <div className="stockExchangesStatsSection flex flex-row">
-                <div className="niftySection h-[60px] w-[50%] border-black border-[1px]">
-                    Nifty
-                </div>
-                <div className="sensexSection h-[60px] w-[50%] border-black border-[1px]">
-                    Sensex
-                </div>
+                {
+                    headerStocks.map((element) => (
+                        <div className="stock h-[60px] w-[50%] flex flex-row">
+                            <div className="stockInformation h-full w-[50%] pl-[10px] flex flex-col justify-center border-black border-l-[1px]">
+                                <div className="name text-[15px] font-[450] truncate ...">{element.name}</div>
+                                <div className="exchange text-[11px] font-[360] truncate ...">{element.exchange}</div>
+                            </div>
+                            {
+                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey) ?
+                                <div className="stockPrice w-full mr-[5%] mt-[2px]">
+                                    {
+                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
+                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
+                                        (
+                                            <>
+                                                <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
+                                                    id="positivePrice">
+                                                    {
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
+                                                    }
+                                                </div>
+                                                <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
+                                                    id="positiveGrowth">
+                                                    +
+                                                    {
+                                                        ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
+                                                    }
+                                                    %
+                                                </div>
+                                            </>
+                                        ) :
+                                        (
+                                            <>
+                                                <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
+                                                    id="negativePrice">
+                                                    {
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
+                                                    }
+                                                </div>
+                                                <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
+                                                    id="negativeGrowth">
+                                                    +
+                                                    {
+                                                        ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
+                                                    }
+                                                    %
+                                                </div>
+                                            </>
+                                        )
+                                    }
+                                </div> :
+                                <></>
+                            }
+                        </div>
+                    ))
+                }
             </div>
 
             <div className="watchListsDiv h-[50px] flex flex-row items-end border-green-600 border-[1px]">
                 <div className="watchLists w-[90%] text-[17px] h-[80%] ml-[5px] overflow-x-auto overflow-y-hidden border-black border-[1px]">
                     {
                         watchLists.map((element, index) => (
-                            <div className="watchList inline h-[85%] mx-[3px] px-[3px] max-w-[50%] rounded-[7px] truncate ... hover:cursor-pointer border-black border-[1px]"
+                            <div className="watchList inline h-[85%] mx-[3px] px-[5px] py-[1px] max-w-[50%] rounded-[7px] truncate ... hover:cursor-pointer border-black border-[1px]"
                             key={index} index={index} onClick={watchListClicked}>
                                 {element.name}
                             </div>
@@ -229,14 +338,14 @@ export default function WatchListsSection() {
                     (
                         <div className="currentWatchListInformation h-[40px] flex flex-row"
                         onMouseEnter={hoveringOnWatchList} onMouseLeave={notHoveringOnWatchList}>
-                            <div className="currentWatchListNameDiv max-w-[65%] pl-[5px] pr-[5px] flex items-center border-black border-[1px]">
-                                <div className="currentWatchListName text-[18px] truncate ...">{currentWatchList.name}</div>
+                            <div className="currentWatchListNameDiv max-w-[65%] pl-[10px] pr-[5px] flex items-center">
+                                <div className="currentWatchListName text-[18px] font-[500] truncate ...">{currentWatchList.name}</div>
                             </div>
 
                             {
                                 hoveringOnWatchListName ?
                                 (
-                                    <div className="editWatchListOptionsDiv min-w-[35%] flex flex-row items-center grow justify-end border-blue-400 border-[1px]">
+                                    <div className="editWatchListOptionsDiv min-w-[35%] flex flex-row items-center grow justify-end">
                                         <div className="editWatchListOptions mr-[5px] flex flex-row border-red-400 border-[1px]">
                                             <div className="editWatchListNameButton h-[28px] w-[28px] mr-[8px] text-[30px] font-[350] text-center flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
                                             onClick={editWatchListNameButtonClicked}>
@@ -257,7 +366,9 @@ export default function WatchListsSection() {
                                 ) :
                                 (
                                     <div className="currentWatchListStocksNumberDiv flex items-center">
-                                        <div className="currentWatchListStocksNumber text-[15px] font-[500] rounded-[5px] border-black border-[1px]">{currentWatchList.stocks.length}/20</div>
+                                        <div className="currentWatchListStocksNumber text-[15px] px-[5px] py-[1px] font-[400] rounded-[5px] border-black border-[1px]">
+                                            {currentWatchList.stocks.length}/20
+                                        </div>
                                     </div>
                                 )
                             }
@@ -273,21 +384,65 @@ export default function WatchListsSection() {
                             <div className="stock h-[60px] flex flex-row border-black border-[1px] hover:cursor-pointer"
                             key={index} index={index} onMouseEnter={hoveringOnStock} onMouseLeave={notHoveringOnStock}
                             onClick={stockClicked}>
-                                <div className="stockInformation w-[80%] flex flex-col justify-center px-[5px]" index={index}>
-                                    <div className="name text-[17px] font-[450]" index={index}>{element.name}</div>
-                                    <div className="instrumentKey text-[12px] font-[360]" index={index}>{element.instrumentKey}</div>
+                                <div className="stockInformation min-w-[70%] flex flex-col justify-center pl-[10px] pr-[5px]"
+                                    index={index}>
+                                    <div className="name text-[17px] font-[450] truncate ..." index={index}>{element.name}</div>
+                                    <div className="exchange text-[12px] font-[360] truncate ..." index={index}>{element.exchange}</div>
                                 </div>
 
                                 {
                                     hoveringStockIndex != index ?
                                     (
-                                        <div className="stockPrice" index={index}>
-                                            <div className="price" index={index}>200.00</div>
-                                            <div className="growth" index={index}>12%</div>
-                                        </div>
+                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey) ?
+                                        (<div className="stockPrice w-full mr-[5%] mt-[2px]" index={index}>
+                                            {
+                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
+                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
+                                                (
+                                                    <>
+                                                        <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
+                                                            id="positivePrice" index={index}>
+                                                            {
+                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
+                                                            }
+                                                        </div>
+                                                        <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
+                                                            id="positiveGrowth" index={index}>
+                                                            +
+                                                            {
+                                                                ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
+                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
+                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
+                                                            }
+                                                            %
+                                                        </div>
+                                                    </>
+                                                ) :
+                                                (
+                                                    <>
+                                                        <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
+                                                            id="negativePrice" index={index}>
+                                                            {
+                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
+                                                            }
+                                                        </div>
+                                                        <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
+                                                            id="negativeGrowth" index={index}>
+                                                            {
+                                                                ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
+                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
+                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
+                                                            }
+                                                            %
+                                                        </div>
+                                                    </>
+                                                )
+                                            }
+                                        </div>) :
+                                        <></>
                                     ) :
                                     (
-                                        <div className="stockEditOptions flex flex-row grow h-full justify-center items-center z-2 border-black border-[1px]">
+                                        <div className="stockEditOptions flex flex-row grow h-full w-[30%] justify-center items-center z-2">
                                             <div className="buy border-black border-[1px] mx-[5px] px-[5px]" onClick={buyStock}>B</div>
                                             <div className="sell border-black border-[1px] mx-[5px] px-[5px]" onClick={sellStock}>S</div>
                                             <div className="delete border-black border-[1px] ml-[5px] mr-[10px] px-[5px]"

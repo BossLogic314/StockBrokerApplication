@@ -5,15 +5,38 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import marketDataRouter from './routes/marketData.js';
+import http from "http";
 import { connectToOpenSearchService } from './opensearch/connect.js';
+import { Server } from 'socket.io';
+import { getMarketDataFeed } from './utils/marketDataAPI.js';
 
 const app = express();
+const server = http.createServer(app);
 const PORT = 8086;
 
 dotenv.config();
 
 // Connecting to the open search service
 connectToOpenSearchService();
+
+const io = new Server(server, {
+    cors: {
+        allowedHeaders: ["*"],
+        origin: "*"
+    }
+});
+
+io.on('connection', (socket) => {
+    console.log('Client connected');
+    socket.on('market data', ({accessToken, instrumentKeys}) => {
+        getMarketDataFeed(accessToken, instrumentKeys,
+        (
+            (data) => {
+                socket.emit('market data', data);
+            }
+        ));
+    })
+});
 
 app.use(express.json());
 app.use(cookieParser());
@@ -24,6 +47,6 @@ app.use(cors({
 
 app.use('/marketData', marketDataRouter);
 
-app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`);
+server.listen(PORT, (req, res) => {
+    console.log(`Server listening on port ${PORT}`);
 });

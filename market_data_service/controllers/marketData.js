@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { verifyJwtToken } from '../utils/jwtToken.js';
 import { openSearchClient } from '../opensearch/connect.js';
+import { getMarketDataFeed } from '../utils/marketDataAPI.js';
 
 export const getOHLCData = (async (req, res) => {
 

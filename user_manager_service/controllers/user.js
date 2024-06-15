@@ -32,3 +32,22 @@ export const getUserInformation = (async (req, res) => {
         res.status(500).json({message: "Server error!"});
       });
 });
+
+export const getAccessToken = (async (req, res) => {
+  let accessToken = null;
+  try {
+    const jwtToken = req.cookies.jwt;
+    accessToken = verifyJwtToken(jwtToken);
+
+    if (!accessToken) {
+      res.status(401).json({message: "User unauthorized!"});
+      return;
+    }
+  }
+  catch(error) {
+    res.status(401).json({message: "User unauthorized!"});
+    return;
+  }
+
+  res.status(200).json({accessToken: accessToken});
+});

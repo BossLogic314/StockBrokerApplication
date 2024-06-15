@@ -10,6 +10,14 @@
 	border-bottom: 12px solid transparent;
 }
 
+#positivePrice, #positiveGrowth {
+    color: rgb(86, 159, 86);
+}
+
+#negativePrice, #negativeGrowth {
+    color: rgb(182, 59, 59);
+}
+
 ::-webkit-scrollbar {
     width: 5px;
 	height: 5px;
