@@ -98,7 +98,7 @@ export default function AddScripDropdown({ getWatchLists }) {
     }, []);
 
     return (
-        <div className="h-full w-[30px] absolute top-0 left-[340px] w-[350px] z-10 bg-blue-100">
+        <div className="addScrip h-full w-[30px] absolute top-0 left-[340px] w-[350px] z-10" id="addScrip">
             <div className="searchBarDiv w-full h-[60px] flex flex-row border-black border-[1px]">
                 <input className="searchBar w-[85%] text-[16px] font-[450] px-[8px] py-[10px] mx-[10px] my-[8px] rounded-[5px] border-black border-[1px]"
                 placeholder="Which scrip are you looking for?"

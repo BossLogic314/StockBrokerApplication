@@ -89,15 +89,13 @@ export default function ChartsSection() {
             <div className="navBar w-full flex flex-row min-h-[60px] max-h-[60px] border-black border-t-[1px] border-r-[1px] border-b-[1px]">
                 <div className="options flex flex-row justify-center items-center">
                     {
-                        options.map(element => (
-                            currentOption == element ?
-                            (
-                                <button className="option h-[70%] text-[18px] font-[400] ml-[20px]" id="chosenOption" onClick={changeOption}>{element}</button>
-                            ) :
-                            (
-                                <button className="option h-[70%] text-[18px] ml-[20px]" id="option" onClick={changeOption}>{element}</button>
-                            )
-                        ))
+                        options.map(element =>
+                            <button className="option h-[70%] text-[18px] font-[400] ml-[20px]"
+                                id={currentOption == element ? "chosenOption" : "option"}
+                                onClick={changeOption}>
+                                {element}
+                            </button>
+                        )
                     }
                 </div>
 

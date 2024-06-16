@@ -1,5 +1,20 @@
 #stockExchangesStatsSection, #editWatchListNameDiv, #chosenWatchList, #currentWatchListInformation {
-    background-color: white;
+    background-color: #ebe9e9;
+}
+
+#chosenStock {
+    background-color: #ebe9e9;
+}
+
+#chosenWatchList, #watchList:hover {
+    border: 2px solid rgb(33, 125, 237);
+    background-color: rgb(33, 125, 237);
+    color: white;
+}
+
+#watchList {
+    border: 2px solid rgb(33, 125, 237);
+    color: rgb(33, 125, 237);
 }
 
 #editWatchListNameDiv {

@@ -295,6 +295,7 @@ export default function WatchListsSection() {
         document.body.appendChild(script);
     }, [])
 
+    console.log(currentStock);
     return (
         <div className="stocksSection h-full w-[340px] min-w-[340px] flex flex-col border-black border-[1px]">
             <div className="stockExchangesStatsSection flex flex-row border-black border-b-[1px]" id="stockExchangesStatsSection">
@@ -309,50 +310,26 @@ export default function WatchListsSection() {
                             {
                                 liveMarketData.find((el) => el.instrumentKey == element.instrumentKey) ?
                                 <div className="stockPrice w-full mr-[5%] mt-[2px]">
-                                    {
-                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
-                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
-                                        (
-                                            <>
-                                                <div className="price h-[50%] text-[14px] pt-[8px] font-[480] flex justify-end truncate ..."
-                                                    id="positivePrice">
-                                                    {
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
-                                                    }
-                                                </div>
-                                                <div className="growth h-[50%] text-[12px] flex justify-end truncate ..."
-                                                    id="positiveGrowth">
-                                                    +
-                                                    {
-                                                        ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
-                                                    }
-                                                    %
-                                                </div>
-                                            </>
-                                        ) :
-                                        (
-                                            <>
-                                                <div className="price h-[50%] text-[14px] pt-[8px] font-[450] flex justify-end truncate ..."
-                                                    id="negativePrice">
-                                                    {
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
-                                                    }
-                                                </div>
-                                                <div className="growth h-[50%] text-[12px] flex justify-end truncate ..."
-                                                    id="negativeGrowth">
-                                                    +
-                                                    {
-                                                        ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
-                                                    }
-                                                    %
-                                                </div>
-                                            </>
-                                        )
-                                    }
+                                    <div className="price h-[50%] text-[14px] pt-[8px] font-[480] flex justify-end truncate ..."
+                                        id={liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
+                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
+                                            "positivePrice" : "negativePrice"}>
+                                        {
+                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
+                                        }
+                                    </div>
+                                    <div className="growth h-[50%] text-[12px] flex justify-end truncate ..."
+                                        id={liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
+                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
+                                            "positivePrice" : "negativePrice"}>
+                                        +
+                                        {
+                                            ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
+                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
+                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
+                                        }
+                                        %
+                                    </div>
                                 </div> :
                                 <></>
                             }
@@ -367,21 +344,11 @@ export default function WatchListsSection() {
                     {
                         watchLists.map((element, index) => (
                             <div className="watchListDiv inline">
-                                {
-                                    currentWatchList != null && currentWatchList.name == element.name ?
-                                    (
-                                        <div className="watchList inline h-[85%] mx-[3px] px-[5px] py-[1px] max-w-[50%] rounded-[7px] truncate ... hover:cursor-pointer border-black border-[1px]"
-                                            id="chosenWatchList" key={index} index={index} onClick={watchListClicked}>
-                                            {element.name}
-                                        </div>
-                                    ) :
-                                    (
-                                        <div className="watchList inline h-[85%] mx-[3px] px-[5px] py-[1px] max-w-[50%] rounded-[7px] truncate ... hover:cursor-pointer border-black border-[1px]"
-                                            id="watchList" key={index} index={index} onClick={watchListClicked}>
-                                            {element.name}
-                                        </div>
-                                    )
-                                }
+                                <div className="watchList inline h-[85%] mx-[3px] px-[5px] py-[1px] text-[17.5px] font-[400] max-w-[50%] rounded-[7px] truncate ... hover:cursor-pointer"
+                                    id={currentWatchList != null && currentWatchList.name == element.name ? "chosenWatchList" : "watchList"}
+                                    key={index} index={index} onClick={watchListClicked}>
+                                    {element.name}
+                                </div>
                             </div>
                         ))
                     }
@@ -442,8 +409,8 @@ export default function WatchListsSection() {
                     (
                         currentWatchList.stocks.map((element, index) =>
                         (
-                            <div className="stock h-[65px] flex flex-row hover:cursor-pointer border-black border-b-[1px]" id="stock"
-                                instrument-key={element.instrumentKey} key={index} index={index}
+                            <div className="stock h-[65px] flex flex-row hover:cursor-pointer border-black border-b-[1px]"
+                                id={currentStock.instrumentKey == element.instrumentKey ? "chosenStock" : "stock"} instrument-key={element.instrumentKey} key={index} index={index}
                                 onMouseEnter={hoveringOnStock} onMouseLeave={notHoveringOnStock}
                                 onClick={stockClicked}>
                                 <div className="stockInformation min-w-[70%] flex flex-col justify-center pl-[10px] pr-[5px]"
@@ -460,51 +427,30 @@ export default function WatchListsSection() {
                                     hoveringStockIndex != index ?
                                     (
                                         liveMarketData.find((el) => el.instrumentKey == element.instrumentKey) ?
-                                        (<div className="stockPrice w-full mr-[5%] mt-[2px]" index={index}>
-                                            {
-                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
-                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
-                                                (
-                                                    <>
-                                                        <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
-                                                            id="positivePrice" index={index}>
-                                                            {
-                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
-                                                            }
-                                                        </div>
-                                                        <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
-                                                            id="positiveGrowth" index={index}>
-                                                            +
-                                                            {
-                                                                ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
-                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
-                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
-                                                            }
-                                                            %
-                                                        </div>
-                                                    </>
-                                                ) :
-                                                (
-                                                    <>
-                                                        <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
-                                                            id="negativePrice" index={index}>
-                                                            {
-                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
-                                                            }
-                                                        </div>
-                                                        <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
-                                                            id="negativeGrowth" index={index}>
-                                                            {
-                                                                ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
-                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
-                                                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
-                                                            }
-                                                            %
-                                                        </div>
-                                                    </>
-                                                )
-                                            }
-                                        </div>) :
+                                        (
+                                            <div className="stockPrice w-full mr-[5%] mt-[2px]" index={index}>
+                                                <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
+                                                    id={liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
+                                                        "positivePrice" : "negativePrice"} index={index}>
+                                                    {
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
+                                                    }
+                                                </div>
+                                                <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
+                                                    id={liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
+                                                        "positiveGrowth" : "negativeGrowth"} index={index}>
+                                                    +
+                                                    {
+                                                        ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
+                                                    }
+                                                    %
+                                                </div>
+                                            </div>
+                                        ) :
                                         <></>
                                     ) :
                                     (
