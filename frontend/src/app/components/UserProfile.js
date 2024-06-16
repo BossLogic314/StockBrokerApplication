@@ -43,10 +43,10 @@ export default function UserProfile() {
 
     return (
         <div className="userProfileButton mx-[15px] flex grow justify-end">
-            <div className="imageDiv h-full w-[55px] h-[55px] w-[55px]">
-                <img className="rounded-full border-black border-[1px] hover:cursor-pointer hover:scale-[1.03] active:scale-[1]"
-                src="https://chat-application-display-pictures-bucket.s3.ap-south-1.amazonaws.com/default.jpg"
-                onClick={userProfileClicked}>
+            <div className="imageDiv h-full w-[55px] h-[55px] w-[55px] flex items-center">
+                <img className="rounded-full hover:cursor-pointer hover:scale-[1.03] active:scale-[1] border-black border-[1px]"
+                    src="https://chat-application-display-pictures-bucket.s3.ap-south-1.amazonaws.com/default.jpg"
+                    onClick={userProfileClicked}>
                 </img>
             </div>
             {

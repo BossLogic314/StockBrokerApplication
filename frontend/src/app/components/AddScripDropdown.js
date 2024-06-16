@@ -48,6 +48,14 @@ export default function AddScripDropdown({ getWatchLists }) {
             return;
         }
 
+        for (let i = 0; i < currentWatchList.stocks.length; ++i) {
+
+            // If the stock is already present in the watchlist
+            if (currentWatchList.stocks[i].instrumentKey == event.target.getAttribute('instrument-key')) {
+                return;
+            }
+        }
+
         const exchange = event.target.getAttribute('exchange');
         const instrumentKey = event.target.getAttribute('instrument-key');
         const type = event.target.getAttribute('type');

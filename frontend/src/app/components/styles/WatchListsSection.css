@@ -1,17 +1,21 @@
-#moveToLeftFrame {
-    border-top: 12px solid transparent;
-	border-right: 24px solid rgb(21, 21, 23);
-	border-bottom: 12px solid transparent;
+#stockExchangesStatsSection, #editWatchListNameDiv, #chosenWatchList, #currentWatchListInformation {
+    background-color: white;
 }
 
-#moveToRightFrame {
-    border-top: 12px solid transparent;
-	border-left: 24px solid rgb(21, 21, 23);
-	border-bottom: 12px solid transparent;
+#editWatchListNameDiv {
+    border: 1px solid black;
 }
 
 #watchLists:hover {
     overflow-x: auto;
+}
+
+#editWatchListNameButton:hover, #addWatchListButton:hover, #deleteWatchListButton:hover, #addScripButton:hover, #delete:hover, #tick:hover, #cross:hover {
+    border-bottom: 3px solid rgb(33, 125, 237);
+}
+
+#currentWatchListStocksNumber {
+    background-color: white;
 }
 
 #positivePrice, #positiveGrowth {

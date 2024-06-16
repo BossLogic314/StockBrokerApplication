@@ -80,6 +80,12 @@ export default function WatchListsSection() {
     }
 
     const addNewWatchList = async(event) => {
+
+        if (watchLists.length >= 20) {
+            alert('Cannot add more watchlists');
+            return;
+        }
+
         try {
             const response = await axios.post('http://localhost:8087/watchLists/addWatchList',
             {
@@ -281,9 +287,17 @@ export default function WatchListsSection() {
         getLiveMarketData();
     }, [currentWatchList]);
 
+    useEffect(() => {
+        const script = document.createElement("script");
+        script.src = "https://kit.fontawesome.com/13ecd81147.js";
+        script.async = true;
+    
+        document.body.appendChild(script);
+    }, [])
+
     return (
-        <div className="stocksSection h-full w-[340px] min-w-[340px] border-black border-[1px]">
-            <div className="stockExchangesStatsSection flex flex-row border-black border-b-[1px]">
+        <div className="stocksSection h-full w-[340px] min-w-[340px] flex flex-col border-black border-[1px]">
+            <div className="stockExchangesStatsSection flex flex-row border-black border-b-[1px]" id="stockExchangesStatsSection">
                 {
                     headerStocks.map((element) => (
                         <div className="stock h-[60px] w-[50%] flex flex-row">
@@ -347,33 +361,47 @@ export default function WatchListsSection() {
                 }
             </div>
 
-            <div className="watchListsDiv h-[50px] flex flex-row items-end">
+            <div className="watchListsDiv h-[50px] flex flex-row items-end" id="watchListsDiv">
                 <div className="watchLists w-[90%] flex-flex-row text-[17px] h-[70%] ml-[5px] overflow-x-hidden overflow-y-hidden"
                     id="watchLists">
                     {
                         watchLists.map((element, index) => (
-                            <div className="watchList inline h-[85%] mx-[3px] px-[5px] py-[1px] max-w-[50%] rounded-[7px] truncate ... hover:cursor-pointer border-black border-[1px]"
-                                key={index} index={index} onClick={watchListClicked}>
-                                {element.name}
+                            <div className="watchListDiv inline">
+                                {
+                                    currentWatchList != null && currentWatchList.name == element.name ?
+                                    (
+                                        <div className="watchList inline h-[85%] mx-[3px] px-[5px] py-[1px] max-w-[50%] rounded-[7px] truncate ... hover:cursor-pointer border-black border-[1px]"
+                                            id="chosenWatchList" key={index} index={index} onClick={watchListClicked}>
+                                            {element.name}
+                                        </div>
+                                    ) :
+                                    (
+                                        <div className="watchList inline h-[85%] mx-[3px] px-[5px] py-[1px] max-w-[50%] rounded-[7px] truncate ... hover:cursor-pointer border-black border-[1px]"
+                                            id="watchList" key={index} index={index} onClick={watchListClicked}>
+                                            {element.name}
+                                        </div>
+                                    )
+                                }
                             </div>
                         ))
                     }
                 </div>
 
-                <div className="addWatchListDiv h-[30px] w-[30px] text-[30px] font-[300] mx-[5px] flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
-                onClick={addNewWatchList}>
-                    +
+                <div className="addWatchListDiv h-full w-[30px] text-[30px] font-[300] mx-[5px] flex justify-center items-center hover:cursor-pointer">
+                    <i className="addWatchListButton fa-solid fa-plus fa-sm h-[30px] w-[30px] mt-[5px] pt-[12px] pl-[2px] hover:cursor-pointer"
+                        id="addWatchListButton" onClick={addNewWatchList}>
+                    </i>
                 </div>
             </div>
 
-            <div className="currentWatchList text-[18px] border-black border-t-[1px]">
+            <div className="currentWatchList text-[18px] flex flex-grow overflow-y-hidden flex-col border-black border-t-[1px]">
                 {
                     currentWatchList != null ?
                     (
-                        <div className="currentWatchListInformation h-[40px] flex flex-row border-black border-b-[1px]" id="currentWatchListInformation"
-                        onMouseEnter={hoveringOnWatchList} onMouseLeave={notHoveringOnWatchList}>
+                        <div className="currentWatchListInformation min-h-[45px] max-h-[45px] flex flex-row border-black border-b-[1px]"
+                            id="currentWatchListInformation" onMouseEnter={hoveringOnWatchList} onMouseLeave={notHoveringOnWatchList}>
                             <div className="currentWatchListNameDiv max-w-[65%] pl-[10px] pr-[5px] flex items-center">
-                                <div className="currentWatchListName text-[18px] font-[500] truncate ...">{currentWatchList.name}</div>
+                                <div className="currentWatchListName text-[20px] font-[500] truncate ...">{currentWatchList.name}</div>
                             </div>
 
                             {
@@ -381,26 +409,24 @@ export default function WatchListsSection() {
                                 (
                                     <div className="editWatchListOptionsDiv min-w-[35%] flex flex-row items-center grow justify-end">
                                         <div className="editWatchListOptions mr-[5px] flex flex-row">
-                                            <div className="editWatchListNameButton h-[28px] w-[28px] mr-[8px] text-[30px] font-[350] text-center flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
-                                            onClick={editWatchListNameButtonClicked}>
-                                                E
-                                            </div>
+                                            <i className="editWatchListNameButton fa-solid fa-pencil fa-lg h-[30px] w-[30px] mr-[8px] mt-[3px] pt-[12px] pl-[3px] hover:cursor-pointer"
+                                                id="editWatchListNameButton" onClick={editWatchListNameButtonClicked}>
+                                            </i>
 
-                                            <div className="deleteWatchListButton h-[28px] w-[28px] mr-[8px] text-[30px] font-[350] text-center flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
-                                            onClick={deleteWatchListButtonClicked}>
-                                                D
-                                            </div>
+                                            <i className="deleteWatchListButton fa-solid fa-trash fa-lg h-[30px] w-[30px] mr-[8px] mt-[3px] pt-[12px] pl-[3px] hover:cursor-pointer"
+                                                id="deleteWatchListButton" onClick={deleteWatchListButtonClicked}>
+                                            </i>
 
-                                            <div className="addScripButton h-[28px] w-[28px] text-[30px] font-[350] text-center flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
-                                            onClick={addScripButtonClicked}>
-                                                +
-                                            </div>
+                                            <i className="addScripButton fa-solid fa-plus fa-lg h-[30px] w-[30px] mt-[3px] pt-[12px] pl-[3px] hover:cursor-pointer"
+                                                id="addScripButton" onClick={addScripButtonClicked}>
+                                            </i>
                                         </div>
                                     </div>
                                 ) :
                                 (
                                     <div className="currentWatchListStocksNumberDiv flex items-center">
-                                        <div className="currentWatchListStocksNumber text-[15px] px-[5px] py-[1px] font-[400] rounded-[5px] border-black border-[1px]">
+                                        <div className="currentWatchListStocksNumber text-[15px] px-[5px] py-[1px] font-[400] rounded-[5px] border-black border-[1px]"
+                                            id="currentWatchListStocksNumber">
                                             {currentWatchList.stocks.length}/20
                                         </div>
                                     </div>
@@ -410,6 +436,7 @@ export default function WatchListsSection() {
                     ) :
                     <></>
                 }
+                <div className="stocks flex-grow overflow-y-auto" id="stocks">
                 {
                     currentWatchList != null ?
                     (
@@ -485,10 +512,9 @@ export default function WatchListsSection() {
                                             instrument-key={element.instrumentKey}>
                                             <div className="buy mx-[5px] px-[5px] font-[450] rounded-[5px]" id="buy" onClick={buyStock}>B</div>
                                             <div className="sell mx-[5px] px-[5px] font-[450] rounded-[5px]" id="sell" onClick={sellStock}>S</div>
-                                            <div className="delete border-black border-[1px] ml-[5px] mr-[10px] px-[5px] rounded-[5px]" id="delete"
-                                                instrument-key={element.instrumentKey} onClick={deleteStockFromWatchList}>
-                                                D
-                                            </div>
+                                            <i className="delete fa-solid fa-trash fa-lg h-[30px] w-[30px] mr-[8px] mt-[5px] pt-[12px] pl-[3px] ml-[5px] h-[30px] mr-[10px] px-[5px]"
+                                                id="delete" instrument-key={element.instrumentKey} onClick={deleteStockFromWatchList}>
+                                            </i>
                                         </div>
                                     )
                                 }
@@ -497,6 +523,7 @@ export default function WatchListsSection() {
                     ) :
                     <></>
                 }
+                </div>
             </div>
             {
                 displayAddScripsDropdown ?
@@ -511,17 +538,19 @@ export default function WatchListsSection() {
             {
                 editingWatchListName ?
                 (
-                    <div className="editWatchListNameDiv flex flex-row items-center fixed bg-blue-300 top-[110px] h-[40px] w-[340px] z-2 border-red-600 border-[1px]">
-                        <input className="editWatchListName text-[15px] ml-[3%] px-[5px] border-black border-[1px] h-[80%] w-[70%]"
+                    <div className="editWatchListNameDiv flex flex-row items-center fixed top-[110px] h-[50px] w-[340px] z-2" id="editWatchListNameDiv">
+                        <input className="editWatchListName text-[18px] ml-[3%] px-[5px] border-black border-[1px] h-[80%] w-[70%] rounded-[5px]"
                         id="editWatchListName" defaultValue={newWatchListName} onChange={newWatchListNameChanged} autoFocus>
                         </input>
-                        <div className="tick h-[80%] w-[10%] ml-[2%] pt-[2px] text-center hover:cursor-pointer border-black border-[1px]"
-                        onClick={changeWatchListName}>
-                            Y
+                        <div className="tickDiv h-full w-[10%] ml-[2%] pt-[2px] flex justify-center items-center hover:cursor-pointer">
+                            <i className="tick fa-solid fa-check fa-lg h-[30px] w-[30px] mt-[3px] pt-[12px] pl-[5px] hover:cursor-pointer"
+                                id="tick" onClick={changeWatchListName}>
+                            </i>
                         </div>
-                        <div className="cross h-[80%] w-[10%] ml-[2%] pt-[2px] text-center hover:cursor-pointer border-black border-[1px]"
-                        onClick={cancelChangeOfWatchListName}>
-                            N
+                        <div className="crossDiv h-full w-[10%] ml-[2%] pt-[2px] flex justify-center items-center hover:cursor-pointer">
+                            <i className="cross fa-solid fa-xmark fa-lg h-[30px] w-[30px] mt-[3px] pt-[12px] pl-[5px] hover:cursor-pointer"
+                                id="cross" onClick={cancelChangeOfWatchListName}>
+                            </i>
                         </div>
                     </div>
                 ) :
