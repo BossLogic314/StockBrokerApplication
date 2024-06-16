@@ -1,3 +1,19 @@
-#charts:hover, #orders:hover, #positions:hover, #holdings:hover {
-    border-bottom: solid 3px rgb(38, 134, 245);
+#option:hover {
+    border-bottom: solid 3px rgb(33, 125, 237);
+}
+
+#chosenOption {
+    color: rgb(33, 125, 237);
+    border-bottom: solid 3px rgb(33, 125, 237);
+}
+
+#scale {
+    border: 2px solid rgb(33, 125, 237);
+    color: rgb(33, 125, 237);
+}
+
+#chosenScale, #scale:hover {
+    border: 2px solid rgb(33, 125, 237);
+    background-color: rgb(33, 125, 237);
+    color: white;
 }

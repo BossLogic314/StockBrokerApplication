@@ -10,17 +10,41 @@
 	border-bottom: 12px solid transparent;
 }
 
+#watchLists:hover {
+    overflow-x: auto;
+}
+
 #positivePrice, #positiveGrowth {
-    color: rgb(86, 159, 86);
+    color: rgb(19, 176, 19);
 }
 
 #negativePrice, #negativeGrowth {
-    color: rgb(182, 59, 59);
+    color: rgb(230, 15, 15);
+}
+
+#buy {
+    color: rgb(35, 137, 35);
+    border: 1.5px solid rgb(35, 137, 35);
+}
+
+#buy:hover {
+    color: white;
+    background-color: rgb(35, 137, 35);
+}
+
+#sell {
+    color: rgb(228, 50, 50);
+    border: 1.5px solid rgb(228, 50, 50);
+}
+
+#sell:hover {
+    color: white;
+    background-color: rgb(228, 50, 50);
 }
 
 ::-webkit-scrollbar {
-    width: 5px;
-	height: 5px;
+    width: 4px;
+	height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -29,5 +53,5 @@
 
 ::-webkit-scrollbar-thumb {
     background: #949191; 
-    height: 10px;
+    height: 3px;
 }

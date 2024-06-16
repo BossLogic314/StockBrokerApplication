@@ -5,6 +5,7 @@ import { useLoadingStore } from '../../../zustand/useLoadingStore';
 import { useAddScripDropdownStore } from '../../../zustand/useAddScripDropdownStore';
 import { useWatchListStore } from '../../../zustand/useWatchListStore';
 import { useShowDeleteWatchListWarningStore } from '../../../zustand/useShowDeleteWatchListWarningStore';
+import { useChartsStore } from '../../../zustand/useChartsStore';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import AddScriptDropdown from './AddScripDropdown';
@@ -26,6 +27,7 @@ export default function WatchListsSection() {
     const {displayAddScripsDropdown, setDisplayAddScripsDropdown} = useAddScripDropdownStore();
     const [socket, setSocket] = useState(null);
     const [liveMarketData, setLiveMarketData] = useState([]);
+    const {currentStock, setCurrentStock, setCurrentScale} = useChartsStore();
     const [headerStocks, setHeaderStocks] = useState(
         [
             {exchange: 'NSE_INDEX', instrumentKey: 'NSE_INDEX|Nifty 50', name: 'NIFTY 50'},
@@ -187,8 +189,38 @@ export default function WatchListsSection() {
         setEditingWatchListName(false);
     }
 
-    const stockClicked = (event) => {
+    const stockClicked = async (event) => {
+
         cancelChangeOfWatchListName();
+
+        // If buy or sell button is clicked
+        if (event.target.id == 'buy' || event.target.id == 'sell' | event.target.id == 'delete') {
+            return;
+        }
+
+        const instrumentKey = event.target.getAttribute('instrument-key');
+        let candles = null;
+        try {
+            const response = await axios.get(
+                `http://localhost:8086/marketData/getDataInInterval?instrumentKey=${instrumentKey}&interval=1minute`,
+            {
+                withCredentials: true
+            });
+            candles = response.data.candles;
+        }
+        // The user has to login again
+        catch(error) {
+            router.replace('/');
+        }
+
+        const name = instrumentKey.split('|')[1];
+        const obj = {
+            instrumentKey: instrumentKey,
+            name: name,
+            candles: candles
+        }
+        setCurrentStock(obj);
+        setCurrentScale('1 min');
     }
 
     const getWatchListsAndSetCurrentWatchList = async () => {
@@ -251,12 +283,13 @@ export default function WatchListsSection() {
 
     return (
         <div className="stocksSection h-full w-[340px] min-w-[340px] border-black border-[1px]">
-            <div className="stockExchangesStatsSection flex flex-row">
+            <div className="stockExchangesStatsSection flex flex-row border-black border-b-[1px]">
                 {
                     headerStocks.map((element) => (
                         <div className="stock h-[60px] w-[50%] flex flex-row">
-                            <div className="stockInformation h-full w-[50%] pl-[10px] flex flex-col justify-center border-black border-l-[1px]">
-                                <div className="name text-[15px] font-[450] truncate ...">{element.name}</div>
+                            <div className="stockInformation h-full w-[50%] pl-[10px] flex flex-col justify-center border-black border-l-[1px]"
+                                id="stockInformation">
+                                <div className="name text-[14px] font-[500] truncate ...">{element.name}</div>
                                 <div className="exchange text-[11px] font-[360] truncate ...">{element.exchange}</div>
                             </div>
                             {
@@ -267,13 +300,13 @@ export default function WatchListsSection() {
                                         liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
                                         (
                                             <>
-                                                <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
+                                                <div className="price h-[50%] text-[14px] pt-[8px] font-[480] flex justify-end truncate ..."
                                                     id="positivePrice">
                                                     {
                                                         liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
                                                     }
                                                 </div>
-                                                <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
+                                                <div className="growth h-[50%] text-[12px] flex justify-end truncate ..."
                                                     id="positiveGrowth">
                                                     +
                                                     {
@@ -287,13 +320,13 @@ export default function WatchListsSection() {
                                         ) :
                                         (
                                             <>
-                                                <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
+                                                <div className="price h-[50%] text-[14px] pt-[8px] font-[450] flex justify-end truncate ..."
                                                     id="negativePrice">
                                                     {
                                                         liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
                                                     }
                                                 </div>
-                                                <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
+                                                <div className="growth h-[50%] text-[12px] flex justify-end truncate ..."
                                                     id="negativeGrowth">
                                                     +
                                                     {
@@ -314,12 +347,13 @@ export default function WatchListsSection() {
                 }
             </div>
 
-            <div className="watchListsDiv h-[50px] flex flex-row items-end border-green-600 border-[1px]">
-                <div className="watchLists w-[90%] text-[17px] h-[80%] ml-[5px] overflow-x-auto overflow-y-hidden border-black border-[1px]">
+            <div className="watchListsDiv h-[50px] flex flex-row items-end">
+                <div className="watchLists w-[90%] flex-flex-row text-[17px] h-[70%] ml-[5px] overflow-x-hidden overflow-y-hidden"
+                    id="watchLists">
                     {
                         watchLists.map((element, index) => (
                             <div className="watchList inline h-[85%] mx-[3px] px-[5px] py-[1px] max-w-[50%] rounded-[7px] truncate ... hover:cursor-pointer border-black border-[1px]"
-                            key={index} index={index} onClick={watchListClicked}>
+                                key={index} index={index} onClick={watchListClicked}>
                                 {element.name}
                             </div>
                         ))
@@ -332,11 +366,11 @@ export default function WatchListsSection() {
                 </div>
             </div>
 
-            <div className="currentWatchList text-[18px] border-black border-[1px]">
+            <div className="currentWatchList text-[18px] border-black border-t-[1px]">
                 {
                     currentWatchList != null ?
                     (
-                        <div className="currentWatchListInformation h-[40px] flex flex-row"
+                        <div className="currentWatchListInformation h-[40px] flex flex-row border-black border-b-[1px]" id="currentWatchListInformation"
                         onMouseEnter={hoveringOnWatchList} onMouseLeave={notHoveringOnWatchList}>
                             <div className="currentWatchListNameDiv max-w-[65%] pl-[10px] pr-[5px] flex items-center">
                                 <div className="currentWatchListName text-[18px] font-[500] truncate ...">{currentWatchList.name}</div>
@@ -346,7 +380,7 @@ export default function WatchListsSection() {
                                 hoveringOnWatchListName ?
                                 (
                                     <div className="editWatchListOptionsDiv min-w-[35%] flex flex-row items-center grow justify-end">
-                                        <div className="editWatchListOptions mr-[5px] flex flex-row border-red-400 border-[1px]">
+                                        <div className="editWatchListOptions mr-[5px] flex flex-row">
                                             <div className="editWatchListNameButton h-[28px] w-[28px] mr-[8px] text-[30px] font-[350] text-center flex justify-center items-center hover:cursor-pointer border-black border-[1px]"
                                             onClick={editWatchListNameButtonClicked}>
                                                 E
@@ -381,13 +415,18 @@ export default function WatchListsSection() {
                     (
                         currentWatchList.stocks.map((element, index) =>
                         (
-                            <div className="stock h-[60px] flex flex-row border-black border-[1px] hover:cursor-pointer"
-                            key={index} index={index} onMouseEnter={hoveringOnStock} onMouseLeave={notHoveringOnStock}
-                            onClick={stockClicked}>
+                            <div className="stock h-[65px] flex flex-row hover:cursor-pointer border-black border-b-[1px]" id="stock"
+                                instrument-key={element.instrumentKey} key={index} index={index}
+                                onMouseEnter={hoveringOnStock} onMouseLeave={notHoveringOnStock}
+                                onClick={stockClicked}>
                                 <div className="stockInformation min-w-[70%] flex flex-col justify-center pl-[10px] pr-[5px]"
-                                    index={index}>
-                                    <div className="name text-[17px] font-[450] truncate ..." index={index}>{element.name}</div>
-                                    <div className="exchange text-[12px] font-[360] truncate ..." index={index}>{element.exchange}</div>
+                                    index={index} instrument-key={element.instrumentKey}>
+                                    <div className="name text-[17px] font-[450] truncate ..." index={index} instrument-key={element.instrumentKey}>
+                                        {element.name}
+                                    </div>
+                                    <div className="exchange text-[12px] font-[360] truncate ..." index={index} instrument-key={element.instrumentKey}>
+                                        {element.exchange}
+                                    </div>
                                 </div>
 
                                 {
@@ -442,11 +481,12 @@ export default function WatchListsSection() {
                                         <></>
                                     ) :
                                     (
-                                        <div className="stockEditOptions flex flex-row grow h-full w-[30%] justify-center items-center z-2">
-                                            <div className="buy border-black border-[1px] mx-[5px] px-[5px]" onClick={buyStock}>B</div>
-                                            <div className="sell border-black border-[1px] mx-[5px] px-[5px]" onClick={sellStock}>S</div>
-                                            <div className="delete border-black border-[1px] ml-[5px] mr-[10px] px-[5px]"
-                                            instrument-key={element.instrumentKey} onClick={deleteStockFromWatchList}>
+                                        <div className="stockEditOptions flex flex-row grow h-full w-[30%] justify-center items-center"
+                                            instrument-key={element.instrumentKey}>
+                                            <div className="buy mx-[5px] px-[5px] font-[450] rounded-[5px]" id="buy" onClick={buyStock}>B</div>
+                                            <div className="sell mx-[5px] px-[5px] font-[450] rounded-[5px]" id="sell" onClick={sellStock}>S</div>
+                                            <div className="delete border-black border-[1px] ml-[5px] mr-[10px] px-[5px] rounded-[5px]" id="delete"
+                                                instrument-key={element.instrumentKey} onClick={deleteStockFromWatchList}>
                                                 D
                                             </div>
                                         </div>
