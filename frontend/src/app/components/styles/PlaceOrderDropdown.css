@@ -1,0 +1,24 @@
+#placeOrder {
+    background-color: white;
+}
+
+#stockToPlaceOrderOn {
+    background-color: #ebe9e9;
+}
+
+#closePlaceOrderDropdownButtonDiv:hover {
+    background-color: rgb(227, 48, 48);
+    color: white;
+}
+
+#productButton {
+    border: 2px solid rgb(33, 125, 237);
+    background-color: white;
+    color: rgb(33, 125, 237);
+}
+
+#chosenProductButton, #productButton:hover {
+    border: 2px solid rgb(33, 125, 237);
+    background-color: rgb(33, 125, 237);
+    color: white;
+}

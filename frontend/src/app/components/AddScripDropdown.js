@@ -98,26 +98,26 @@ export default function AddScripDropdown({ getWatchLists }) {
     }, []);
 
     return (
-        <div className="addScrip h-full w-[30px] absolute top-0 left-[340px] w-[350px] z-10" id="addScrip">
-            <div className="searchBarDiv w-full h-[60px] flex flex-row border-black border-[1px]">
+        <div className="addScrip h-full w-[30px] absolute top-0 left-[340px] w-[350px] flex flex-col z-10" id="addScrip">
+            <div className="searchBarDiv w-full h-[60px] flex flex-row border-black border-t-[1px] border-r-[1px] border-b-[1px]">
                 <input className="searchBar w-[85%] text-[16px] font-[450] px-[8px] py-[10px] mx-[10px] my-[8px] rounded-[5px] border-black border-[1px]"
                 placeholder="Which scrip are you looking for?"
                 onChange={searchForScrips}></input>
 
                 <div className="closeAddScripDropdownDiv flex flex-col justify-center">
-                    <div className="closeAddScripDropdownButtonDiv h-[35px] w-[35px] mr-[5px] text-[20px] rounded-full flex flex-col items-center justify-center hover:cursor-pointer hover:border-black hover:bg-white hover:border-[1px]"
-                    onClick={closeButtonClicked}>
+                    <div className="closeAddScripDropdownButtonDiv h-[35px] w-[35px] mr-[5px] text-[20px] rounded-full flex flex-col items-center justify-center hover:cursor-pointer"
+                        id="closeAddScripDropdownButtonDiv" onClick={closeButtonClicked}>
                         X
                     </div>
                 </div>
             </div>
 
-            <div className="scrips">
+            <div className="scrips flex-grow overflow-y-auto border-black border-r-[1px]">
                 {
                     scripsToPrompt.map((element) =>
                     (
-                        <div className="stock py-[5px] flex flex-row border-black border-[1px]" key={element._source.instrumentKey}>
-                            <div className="stockInformation w-[80%] flex flex-col justify-center ml-[4px] px-[5px] border-black border-[1px]">
+                        <div className="stock py-[5px] flex flex-row border-black border-b-[1px]" key={element._source.instrumentKey}>
+                            <div className="stockInformation w-[80%] flex flex-col justify-center ml-[4px] px-[5px]">
                                 <div className="name text-[17px] font-[450]">{element._source.name}</div>
                                 <div className="instrumentKey text-[12px] font-[360]">{element._source.instrumentKey}</div>
                             </div>

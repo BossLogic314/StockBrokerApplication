@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import { useUserDataStore } from '../../../zustand/useUserDataStore';
 import { useLoadingStore } from '../../../zustand/useLoadingStore';
 import { useAddScripDropdownStore } from '../../../zustand/useAddScripDropdownStore';
+import { usePlaceOrderDropdownStore } from '../../../zustand/usePlaceOrderDropdownStore';
 import { useWatchListStore } from '../../../zustand/useWatchListStore';
 import { useShowDeleteWatchListWarningStore } from '../../../zustand/useShowDeleteWatchListWarningStore';
 import { useChartsStore } from '../../../zustand/useChartsStore';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import AddScriptDropdown from './AddScripDropdown';
+import PlaceOrderDropdown from './PlaceOrderDropdown';
 import DeleteWatchListWarning from './DeleteWatchListWarning';
 import io from "socket.io-client";
 import './styles/WatchListsSection.css';
@@ -25,6 +27,8 @@ export default function WatchListsSection() {
     const [newWatchListName, setNewWatchListName] = useState('');
     const {showDeleteWatchListWarning, setShowDeleteWatchListWarning} = useShowDeleteWatchListWarningStore();
     const {displayAddScripsDropdown, setDisplayAddScripsDropdown} = useAddScripDropdownStore();
+    const {toBuy, setToBuy, orderingStock, setOrderingStock, setLiveMarketDataOfOrderingStock,
+            displayPlaceOrderDropdown, setDisplayPlaceOrderDropdown} = usePlaceOrderDropdownStore();
     const [socket, setSocket] = useState(null);
     const [liveMarketData, setLiveMarketData] = useState([]);
     const {currentStock, setCurrentStock, setCurrentScale} = useChartsStore();
@@ -122,12 +126,20 @@ export default function WatchListsSection() {
         setHoveringStockIndex(null);
     }
 
-    const buyStock = (event) => {
-        console.log('Buy stock clicked');
-    }
+    const placeOrder = (event) => {
+        const index = event.target.getAttribute('index');
+        if (event.target.textContent == 'B') {
+            setToBuy(true);
+        }
+        else {
+            setToBuy(false);
+        }
+        setOrderingStock(currentWatchList.stocks[index]);
+        setDisplayPlaceOrderDropdown(true);
 
-    const sellStock = (event) => {
-        console.log('Sell stock clicked');
+        const liveMarketDataOfOrderingStock =
+            liveMarketData.find((element) => element.instrumentKey == currentWatchList.stocks[index].instrumentKey);
+        setLiveMarketDataOfOrderingStock(liveMarketDataOfOrderingStock);
     }
 
     const deleteStockFromWatchList = async (event) => {
@@ -295,7 +307,6 @@ export default function WatchListsSection() {
         document.body.appendChild(script);
     }, [])
 
-    console.log(currentStock);
     return (
         <div className="stocksSection h-full w-[340px] min-w-[340px] flex flex-col border-black border-[1px]">
             <div className="stockExchangesStatsSection flex flex-row border-black border-b-[1px]" id="stockExchangesStatsSection">
@@ -321,8 +332,12 @@ export default function WatchListsSection() {
                                     <div className="growth h-[50%] text-[12px] flex justify-end truncate ..."
                                         id={liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
                                             liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
-                                            "positivePrice" : "negativePrice"}>
-                                        +
+                                            "positiveGrowth" : "negativeGrowth"}>
+                                        {
+                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
+                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
+                                            ("+") : ("")
+                                        }
                                         {
                                             ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
                                             liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
@@ -410,7 +425,7 @@ export default function WatchListsSection() {
                         currentWatchList.stocks.map((element, index) =>
                         (
                             <div className="stock h-[65px] flex flex-row hover:cursor-pointer border-black border-b-[1px]"
-                                id={currentStock.instrumentKey == element.instrumentKey ? "chosenStock" : "stock"} instrument-key={element.instrumentKey} key={index} index={index}
+                                id={currentStock != null && currentStock.instrumentKey == element.instrumentKey ? "chosenStock" : "stock"} instrument-key={element.instrumentKey} key={index} index={index}
                                 onMouseEnter={hoveringOnStock} onMouseLeave={notHoveringOnStock}
                                 onClick={stockClicked}>
                                 <div className="stockInformation min-w-[70%] flex flex-col justify-center pl-[10px] pr-[5px]"
@@ -441,7 +456,11 @@ export default function WatchListsSection() {
                                                     id={liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
                                                         liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
                                                         "positiveGrowth" : "negativeGrowth"} index={index}>
-                                                    +
+                                                    {
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
+                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
+                                                        ("+") : ("")
+                                                    }
                                                     {
                                                         ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
                                                         liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
@@ -456,8 +475,14 @@ export default function WatchListsSection() {
                                     (
                                         <div className="stockEditOptions flex flex-row grow h-full w-[30%] justify-center items-center"
                                             instrument-key={element.instrumentKey}>
-                                            <div className="buy mx-[5px] px-[5px] font-[450] rounded-[5px]" id="buy" onClick={buyStock}>B</div>
-                                            <div className="sell mx-[5px] px-[5px] font-[450] rounded-[5px]" id="sell" onClick={sellStock}>S</div>
+                                            <div className="buy mx-[5px] px-[5px] font-[450] rounded-[5px]"
+                                                id="buy" index={index} onClick={placeOrder}>
+                                                B
+                                            </div>
+                                            <div className="sell mx-[5px] px-[5px] font-[450] rounded-[5px]"
+                                                id="sell" index={index} onClick={placeOrder}>
+                                                S
+                                            </div>
                                             <i className="delete fa-solid fa-trash fa-lg h-[30px] w-[30px] mr-[8px] mt-[5px] pt-[12px] pl-[3px] ml-[5px] h-[30px] mr-[10px] px-[5px]"
                                                 id="delete" instrument-key={element.instrumentKey} onClick={deleteStockFromWatchList}>
                                             </i>
@@ -474,6 +499,11 @@ export default function WatchListsSection() {
             {
                 displayAddScripsDropdown ?
                 <AddScriptDropdown getWatchLists={getWatchLists} /> :
+                <></>
+            }
+            {
+                displayPlaceOrderDropdown ?
+                <PlaceOrderDropdown stock={orderingStock}/> :
                 <></>
             }
             {

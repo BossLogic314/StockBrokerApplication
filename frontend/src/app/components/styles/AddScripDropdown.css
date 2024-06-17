@@ -1,5 +1,10 @@
+#closeAddScripDropdownButtonDiv:hover {
+    background-color: rgb(227, 48, 48);
+    color: white;
+}
+
 #addScrip {
-    background-color: #ebe9e9
+    background-color: white;
 }
 
 #addButton {

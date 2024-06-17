@@ -3,7 +3,8 @@
 }
 
 #chosenStock {
-    background-color: #ebe9e9;
+    border-right: 4px solid rgb(33, 125, 237);
+    border-bottom: 3px solid rgb(33, 125, 237);
 }
 
 #chosenWatchList, #watchList:hover {
