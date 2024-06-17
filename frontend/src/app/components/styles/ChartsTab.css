@@ -1,0 +1,10 @@
+#scale {
+    border: 2px solid rgb(33, 125, 237);
+    color: rgb(33, 125, 237);
+}
+
+#chosenScale, #scale:hover {
+    border: 2px solid rgb(33, 125, 237);
+    background-color: rgb(33, 125, 237);
+    color: white;
+}

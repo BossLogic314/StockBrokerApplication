@@ -117,9 +117,9 @@ export default function AddScripDropdown({ getWatchLists }) {
                     scripsToPrompt.map((element) =>
                     (
                         <div className="stock py-[5px] flex flex-row border-black border-b-[1px]" key={element._source.instrumentKey}>
-                            <div className="stockInformation w-[80%] flex flex-col justify-center ml-[4px] px-[5px]">
-                                <div className="name text-[17px] font-[450]">{element._source.name}</div>
-                                <div className="instrumentKey text-[12px] font-[360]">{element._source.instrumentKey}</div>
+                            <div className="stockInformation w-[78%] flex flex-col justify-center ml-[7px] px-[5px]">
+                                <div className="name text-[17px] font-[450] truncate ...">{element._source.name}</div>
+                                <div className="instrumentKey text-[12px] font-[360] truncate ...">{element._source.instrumentKey}</div>
                             </div>
 
                             <div className="addButtonDiv flex flex-col flex-grow justify-center items-center">

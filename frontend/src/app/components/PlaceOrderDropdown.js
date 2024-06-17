@@ -7,10 +7,10 @@ import './styles/PlaceOrderDropdown.css';
 export default function PlaceOrderDropdown({stock}) {
 
     const {liveMarketDataOfOrderingStock, setDisplayPlaceOrderDropdown} = usePlaceOrderDropdownStore();
-    const [product, setProduct] = useState('MARKET');
+    const [product, setProduct] = useState('DELIVERY');
     const router = useRouter();
 
-    const products = ['MARKET', 'INTRADAY'];
+    const products = ['DELIVERY', 'INTRADAY'];
 
     const closeButtonClicked = () => {
         setDisplayPlaceOrderDropdown(false);

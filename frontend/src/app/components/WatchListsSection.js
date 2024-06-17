@@ -32,12 +32,11 @@ export default function WatchListsSection() {
     const [socket, setSocket] = useState(null);
     const [liveMarketData, setLiveMarketData] = useState([]);
     const {currentStock, setCurrentStock, setCurrentScale} = useChartsStore();
-    const [headerStocks, setHeaderStocks] = useState(
+    const headerStocks =
         [
             {exchange: 'NSE_INDEX', instrumentKey: 'NSE_INDEX|Nifty 50', name: 'NIFTY 50'},
             {exchange: 'BSE_INDEX', instrumentKey: 'BSE_INDEX|SENSEX', name: 'SENSEX'}
-        ]
-    );
+        ];
     const router = useRouter();
 
     const getWatchLists = (async () => {
@@ -207,16 +206,19 @@ export default function WatchListsSection() {
         setEditingWatchListName(false);
     }
 
-    const stockClicked = async (event) => {
+    const stockClicked = async (event = null, instrumentKey = null) => {
 
+        console.log(event);
         cancelChangeOfWatchListName();
 
         // If buy or sell button is clicked
-        if (event.target.id == 'buy' || event.target.id == 'sell' | event.target.id == 'delete') {
+        if (event != null && (event.target.id == 'buy' || event.target.id == 'sell' | event.target.id == 'delete')) {
             return;
         }
 
-        const instrumentKey = event.target.getAttribute('instrument-key');
+        if (instrumentKey == null) {
+            instrumentKey = event.target.getAttribute('instrument-key');
+        }
         let candles = null;
         try {
             const response = await axios.get(
@@ -300,6 +302,9 @@ export default function WatchListsSection() {
     }, [currentWatchList]);
 
     useEffect(() => {
+
+        stockClicked(null, headerStocks[0].instrumentKey);
+
         const script = document.createElement("script");
         script.src = "https://kit.fontawesome.com/13ecd81147.js";
         script.async = true;
