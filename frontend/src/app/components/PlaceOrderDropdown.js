@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { usePlaceOrderDropdownStore } from '../../../zustand/usePlaceOrderDropdownStore';
 import './styles/PlaceOrderDropdown.css';
 
-export default function PlaceOrderDropdown({stock}) {
+export default function PlaceOrderDropdown({stock, toBuy}) {
 
     const {liveMarketDataOfOrderingStock, setDisplayPlaceOrderDropdown} = usePlaceOrderDropdownStore();
     const [product, setProduct] = useState('DELIVERY');
@@ -30,7 +30,6 @@ export default function PlaceOrderDropdown({stock}) {
 
     }, []);
 
-    console.log(isNaN(liveMarketDataOfOrderingStock?.open1D * 100));
     return (
         <div className="placeOrder h-full w-[30px] absolute top-0 left-[340px] w-[350px] flex flex-col z-10" id="placeOrder">
             <div className="header w-full h-[60px] flex flex-row border-black border-t-[1px] border-r-[1px] border-b-[1px]">
@@ -129,7 +128,12 @@ export default function PlaceOrderDropdown({stock}) {
                     </div>
                 </div>
 
-                <div className=""></div>
+                <div className="placeOrderButtonDiv mt-[20px] flex justify-center">
+                    <div className="placeOrderButton w-[90%] text-[16px] font-[500] rounded-[4px] mx-[10px] px-[6px] py-[4px] text-center hover:cursor-pointer"
+                        id={toBuy ? "buyButton" : "sellButton"}>
+                        {toBuy ? "BUY STOCK" : "SELL STOCK"}
+                    </div>
+                </div>
             </div>
         </div>
     );

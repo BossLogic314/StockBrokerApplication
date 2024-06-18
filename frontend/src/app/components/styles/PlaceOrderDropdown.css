@@ -23,6 +23,30 @@
     color: white;
 }
 
+#buyButton {
+    border: 2px solid rgb(35, 137, 35);
+    background-color: white;
+    color: rgb(35, 137, 35);
+}
+
+#buyButton:hover {
+    border: 2px solid rgb(35, 137, 35);
+    background-color: rgb(35, 137, 35);
+    color: white;
+}
+
+#sellButton {
+    border: 2px solid rgb(228, 50, 50);
+    background-color: white;
+    color: rgb(228, 50, 50);
+}
+
+#sellButton:hover {
+    border: 2px solid rgb(228, 50, 50);
+    background-color: rgb(228, 50, 50);
+    color: white;
+}
+
 #horizontalLine {
     border-color: black;
 }

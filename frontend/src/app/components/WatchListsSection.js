@@ -507,7 +507,7 @@ export default function WatchListsSection() {
             }
             {
                 displayPlaceOrderDropdown ?
-                <PlaceOrderDropdown stock={orderingStock}/> :
+                <PlaceOrderDropdown stock={orderingStock} toBuy={toBuy} /> :
                 <></>
             }
             {
