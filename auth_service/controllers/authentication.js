@@ -14,6 +14,17 @@ export let getLoginUrl = (async (req, res) => {
     res.status(200).json({loginUrl: loginUrl});
 });
 
+// Clears the jwt token in response
+export let logoutUser = async (req, res) => {
+    try {
+        res.clearCookie("jwt");
+        res.status(200).json({message: "Logged out!"});
+    }
+    catch(error) {
+        res.status(500).json({message: "Logout failed!"});
+    }
+}
+
 // Returns a cookie with the secret access token with API calls can be made to Upstox
 export let getAccessTokenInCookie = (async (req, res) => {
 

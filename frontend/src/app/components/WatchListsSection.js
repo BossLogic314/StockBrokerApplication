@@ -208,7 +208,6 @@ export default function WatchListsSection() {
 
     const stockClicked = async (event = null, instrumentKey = null) => {
 
-        console.log(event);
         cancelChangeOfWatchListName();
 
         // If buy or sell button is clicked

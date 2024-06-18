@@ -1,9 +1,9 @@
 "use client";
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useUserDataStore } from '../../../zustand/useUserDataStore';
 import { useLoadingStore } from '../../../zustand/useLoadingStore';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 import './styles/UserProfile.css';
 
 export default function UserProfile() {
@@ -37,8 +37,19 @@ export default function UserProfile() {
         setShowUserInformation(!showUserInformation);
     }
 
-    const signOutButtonClicked = (event) => {
-        console.log('Signout button clicked');
+    const signOutButtonClicked = async (event) => {
+        try {
+            const response = await axios.post('http://localhost:8085/auth/logout', {},
+            {
+                withCredentials: true
+            });
+            window.location.reload();
+            router.replace('/');
+        }
+        // The user has to login again
+        catch(error) {
+            router.replace('/');
+        }
     }
 
     return (
