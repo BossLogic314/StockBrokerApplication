@@ -11,14 +11,18 @@
     color: white;
 }
 
-#productButton {
+#productButton, #orderTypeButton {
     border: 2px solid rgb(33, 125, 237);
     background-color: white;
     color: rgb(33, 125, 237);
 }
 
-#chosenProductButton, #productButton:hover {
+#chosenProductButton, #productButton:hover, #chosenOrderTypeButton, #orderTypeButton:hover {
     border: 2px solid rgb(33, 125, 237);
     background-color: rgb(33, 125, 237);
     color: white;
+}
+
+#horizontalLine {
+    border-color: black;
 }

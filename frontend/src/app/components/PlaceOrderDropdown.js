@@ -8,9 +8,11 @@ export default function PlaceOrderDropdown({stock}) {
 
     const {liveMarketDataOfOrderingStock, setDisplayPlaceOrderDropdown} = usePlaceOrderDropdownStore();
     const [product, setProduct] = useState('DELIVERY');
+    const [orderType, setOrderType] = useState('MARKET');
     const router = useRouter();
 
     const products = ['DELIVERY', 'INTRADAY'];
+    const orderTypes = ['MARKET', 'LIMIT'];
 
     const closeButtonClicked = () => {
         setDisplayPlaceOrderDropdown(false);
@@ -20,10 +22,15 @@ export default function PlaceOrderDropdown({stock}) {
         setProduct(event.target.textContent);
     }
 
+    const orderTypeButtonClicked = (event) => {
+        setOrderType(event.target.textContent);
+    }
+
     useEffect(() => {
 
     }, []);
 
+    console.log(isNaN(liveMarketDataOfOrderingStock?.open1D * 100));
     return (
         <div className="placeOrder h-full w-[30px] absolute top-0 left-[340px] w-[350px] flex flex-col z-10" id="placeOrder">
             <div className="header w-full h-[60px] flex flex-row border-black border-t-[1px] border-r-[1px] border-b-[1px]">
@@ -67,25 +74,62 @@ export default function PlaceOrderDropdown({stock}) {
                             ("+") : ("")
                         }
                         {
-                            ((liveMarketDataOfOrderingStock?.close1D - liveMarketDataOfOrderingStock?.open1D) /
-                                liveMarketDataOfOrderingStock.open1D * 100).toFixed(2)
+                            isNaN(((liveMarketDataOfOrderingStock?.close1D - liveMarketDataOfOrderingStock?.open1D) /
+                                        liveMarketDataOfOrderingStock?.open1D * 100).toFixed(2)) ? "" :
+                                    ((liveMarketDataOfOrderingStock?.close1D - liveMarketDataOfOrderingStock?.open1D) /
+                                        liveMarketDataOfOrderingStock?.open1D * 100).toFixed(2)
                         }
-                        %
+                        {
+                            isNaN(((liveMarketDataOfOrderingStock?.close1D - liveMarketDataOfOrderingStock?.open1D) /
+                                liveMarketDataOfOrderingStock?.open1D * 100).toFixed(2)) ? "" : "%"
+                        }
                     </div>
                 </div>
             </div>
 
-            <div className="orderDetails flex-grow border-black border-r-[1px]">
+            <div className="orderDetails flex-grow border-black border-r-[1px] overflow-y-auto">
                 <div className="productButtons mt-[12px] flex flex-row justify-center">
                     {
                         products.map((element) => (
-                            <div className="productButton text-[16px] rounded-[4px] mr-[8px] px-[6px] py-[4px] hover:cursor-pointer"
+                            <div className="productButton text-[16px] rounded-[4px] mx-[8px] px-[6px] py-[4px] hover:cursor-pointer"
                                 id={product == element ? "chosenProductButton" : "productButton"} onClick={productButtonClicked}>
                                 {element}
                             </div>
                         ))
                     }
                 </div>
+
+                <div className="quantityAndPrice mt-[8px] flex flex-row">
+                    <div className="quantity w-[50%] flex flex-col">
+                        <div className="quantityText text-[16px] font-[450] pl-[14px]">Quantity</div>
+                        <input className="quantity w-[85%] mt-[3px] ml-[12px] pl-[5px] py-[1px] text-[19px] font-[300] rounded-[4px] border-black border-[1px]"
+                            type="number" min="1" max="100" defaultValue="1">
+                        </input>
+                    </div>
+                    <div className="price w-[50%]">
+                        <div className="priceText text-[16px] font-[450] pl-[14px]">Price</div>
+                        <input className="price w-[85%] mt-[3px] ml-[12px] pl-[5px] py-[1px] text-[19px] font-[300] rounded-[4px] border-black border-[1px]"
+                            type="number" min="1">
+                        </input>
+                    </div>
+                </div>
+
+                <div className="orderType mt-[12px] flex flex-col justify-center">
+                    <div className="orderTypeText text-center text-[16px] font-[450]">Order Type</div>
+                    <hr className="text-center w-[70%] mt-[2px] ml-[15%] mr-[15%]" id="horizontalLine"></hr>
+                    <div className="orderTypeButtons mt-[9px] flex flex-row justify-center">
+                        {
+                            orderTypes.map((element) => (
+                                <div className="orderTypeButton text-[16px] rounded-[4px] mx-[10px] px-[6px] py-[4px] hover:cursor-pointer"
+                                    id={orderType == element ? "chosenOrderTypeButton" : "orderTypeButton"} onClick={orderTypeButtonClicked}>
+                                    {element}
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+
+                <div className=""></div>
             </div>
         </div>
     );
