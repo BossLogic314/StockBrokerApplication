@@ -4,6 +4,7 @@ import { useChartsStore } from '../../../zustand/useChartsStore';
 import { createChart } from 'lightweight-charts';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { signOut } from '../../../utils/UserProfile';
 import './styles/ChartsTab.css';
 
 export default function ChartsSection() {
@@ -60,7 +61,7 @@ export default function ChartsSection() {
         }
         // The user has to login again
         catch(error) {
-            //router.replace('/');
+            signOut();
         }
 
         const obj = {

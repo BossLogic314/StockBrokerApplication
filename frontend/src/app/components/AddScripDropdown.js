@@ -5,6 +5,7 @@ import { useAddScripDropdownStore } from '../../../zustand/useAddScripDropdownSt
 import { useWatchListStore } from '../../../zustand/useWatchListStore';
 import { useUserDataStore } from '../../../zustand/useUserDataStore';
 import { useRouter } from 'next/navigation';
+import { signOut } from '../../../utils/UserProfile';
 import './styles/AddScripDropdown.css';
 
 export default function AddScripDropdown({ getWatchLists }) {
@@ -33,7 +34,7 @@ export default function AddScripDropdown({ getWatchLists }) {
         }
         // The user has to login again
         catch(error) {
-            router.replace('/');
+            signOut();
         }
     });
 
@@ -78,7 +79,7 @@ export default function AddScripDropdown({ getWatchLists }) {
         }
         // The user needs to login again
         catch(error) {
-            router.replace('/');
+            signOut();
         }
 
         const stockToAdd = {

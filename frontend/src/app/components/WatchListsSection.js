@@ -13,6 +13,7 @@ import AddScriptDropdown from './AddScripDropdown';
 import PlaceOrderDropdown from './PlaceOrderDropdown';
 import DeleteWatchListWarning from './DeleteWatchListWarning';
 import io from "socket.io-client";
+import { signOut } from '../../../utils/UserProfile';
 import './styles/WatchListsSection.css';
 
 export default function WatchListsSection() {
@@ -56,7 +57,7 @@ export default function WatchListsSection() {
         }
         // The user needs to login again
         catch(error) {
-            router.replace('/');
+            signOut();
         }
     });
 
@@ -100,7 +101,7 @@ export default function WatchListsSection() {
         }
         // The user needs to login again
         catch(error) {
-            router.replace('/');
+            signOut();
         }
 
         // Updating watchlists and the current watchlist
@@ -158,7 +159,7 @@ export default function WatchListsSection() {
         }
         // The user needs to login again
         catch(error) {
-            router.replace('/');
+            signOut();
         }
 
         deleteStockFromCurrentWatchList(currentWatchList.stocks[hoveringStockIndex]);
@@ -193,7 +194,7 @@ export default function WatchListsSection() {
         }
         // The user needs to login again
         catch(error) {
-            router.replace('/');
+            signOut();
         }
     }
 
@@ -229,7 +230,7 @@ export default function WatchListsSection() {
         }
         // The user has to login again
         catch(error) {
-            router.replace('/');
+            signOut();
         }
 
         const name = instrumentKey.split('|')[1];
@@ -274,7 +275,7 @@ export default function WatchListsSection() {
         }
         // The user has to login again
         catch(error) {
-            router.replace('/');
+            signOut();
         }
 
         const instrumentKeys = currentWatchList.stocks.map(element => element.instrumentKey);

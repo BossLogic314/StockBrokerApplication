@@ -5,6 +5,7 @@ import { useShowDeleteWatchListWarningStore } from '../../../zustand/useShowDele
 import { useWatchListStore } from '../../../zustand/useWatchListStore';
 import { useUserDataStore } from '../../../zustand/useUserDataStore';
 import { useRouter } from 'next/navigation';
+import { signOut } from '../../../utils/UserProfile';
 import './styles/DeleteWatchListWarning.css';
 
 export default function DeleteWatchListWarning({getWatchLists}) {
@@ -29,7 +30,7 @@ export default function DeleteWatchListWarning({getWatchLists}) {
         }
         // The user needs to login again
         catch(error) {
-            router.replace('/');
+            signOut();
         }
 
         // Updating watchlists and the current watchlist

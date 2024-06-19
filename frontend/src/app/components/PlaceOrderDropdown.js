@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePlaceOrderDropdownStore } from '../../../zustand/usePlaceOrderDropdownStore';
+import { signOut } from '../../../utils/UserProfile';
 import './styles/PlaceOrderDropdown.css';
 
 export default function PlaceOrderDropdown({stock, toBuy}) {
@@ -108,7 +109,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                     <div className="price w-[50%]">
                         <div className="priceText text-[16px] font-[450] pl-[14px]">Price</div>
                         <input className="price w-[85%] mt-[3px] ml-[12px] pl-[5px] py-[1px] text-[19px] font-[300] rounded-[4px] border-black border-[1px]"
-                            type="number" min="1">
+                            type="number" min="1" value={liveMarketDataOfOrderingStock?.ltp}>
                         </input>
                     </div>
                 </div>

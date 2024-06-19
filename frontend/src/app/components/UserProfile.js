@@ -4,6 +4,7 @@ import { useUserDataStore } from '../../../zustand/useUserDataStore';
 import { useLoadingStore } from '../../../zustand/useLoadingStore';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { signOut } from '../../../utils/UserProfile';
 import './styles/UserProfile.css';
 
 export default function UserProfile() {
