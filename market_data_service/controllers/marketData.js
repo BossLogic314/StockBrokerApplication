@@ -66,19 +66,19 @@ export const getDataInInterval = (async (req, res) => {
   let startDate = null;
 
   if (interval == '1minute') {
-    startDate = endDate.getTime() - 3 * milliSecondsInOneDay;
+    startDate = endDate.getTime() - 2 * milliSecondsInOneDay;
   }
   else if (interval == '30minute') {
-    startDate = endDate.getTime() - 14 * milliSecondsInOneDay;
+    startDate = endDate.getTime() - 21 * milliSecondsInOneDay;
   }
   else if (interval == 'day') {
-    startDate = endDate.getTime() - 180 * milliSecondsInOneDay;
+    startDate = endDate.getTime() - 365 * milliSecondsInOneDay;
   }
   else if (interval == 'week') {
-    startDate = endDate.getTime() - 2 * 365 * milliSecondsInOneDay;
+    startDate = endDate.getTime() - 3 * 365 * milliSecondsInOneDay;
   }
   else {
-    startDate = endDate.getTime() - 10 * 365 * milliSecondsInOneDay;
+    startDate = endDate.getTime() - 15 * 365 * milliSecondsInOneDay;
   }
   startDate = new Date(startDate);
 
