@@ -55,13 +55,15 @@ export default function DeleteWatchListWarning({getWatchLists}) {
     }, []);
 
     return (
-        <div className="deleteWatchListWarningOverlay fixed flex flex-col top-[60px] left-0 h-full w-[340px]" id="deleteWatchListWarningOverlay">
-            <div className="message mt-[10px] px-[5px] text-center text-[20px] border-yellow-400 border-[1px]">
-                Are you sure you want to delete the watchlist?
-            </div>
-            <div className="buttonsDiv flex flex-row justify-center text-[20px] mt-[10px]">
-                <button className="deleteButton px-[10px] mr-[10px]" onClick={deleteButtonClicked}>Delete</button>
-                <button className="cancelButton px-[10px] ml-[10px]" onClick={cancelButtonClicked}>Cancel</button>
+        <div className="deleteWatchListWarningOverlay fixed flex flex-col items-center top-[60px] left-0 h-full w-[340px]" id="deleteWatchListWarningOverlay">
+            <div className="deleteWatchListWarningDiv w-[90%] mt-[10px] rounded-[4px]" id="deleteWatchListWarningDiv">
+                <div className="message mt-[10px] px-[5px] text-center text-[20px]">
+                    Are you sure you want to delete the watchlist?
+                </div>
+                <div className="buttonsDiv flex flex-row justify-center text-[20px] mt-[10px] pb-[10px]">
+                    <button className="deleteButton px-[10px] mr-[10px] rounded-[4px]" onClick={deleteButtonClicked} id="deleteButton">Delete</button>
+                    <button className="cancelButton px-[10px] ml-[10px] rounded-[4px]" onClick={cancelButtonClicked} id="cancelButton">Cancel</button>
+                </div>
             </div>
         </div>
     );

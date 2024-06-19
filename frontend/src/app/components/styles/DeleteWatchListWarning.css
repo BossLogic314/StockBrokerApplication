@@ -2,3 +2,32 @@
     background-color: rgb(0, 0, 0, 0.6);
     color: white;
 }
+
+#deleteWatchListWarningDiv {
+    background-color: rgb(0, 0, 0, 0.6);
+    color: white;
+}
+
+#cancelButton {
+    border: 2px solid rgb(35, 137, 35);
+    background-color: rgb(249, 231, 231);
+    color: rgb(35, 137, 35);
+}
+
+#cancelButton:hover {
+    border: 2px solid rgb(35, 137, 35);
+    background-color: rgb(35, 137, 35);
+    color: white;
+}
+
+#deleteButton {
+    border: 2px solid rgb(228, 50, 50);
+    background-color: rgb(249, 231, 231);
+    color: rgb(228, 50, 50);
+}
+
+#deleteButton:hover {
+    border: 2px solid rgb(228, 50, 50);
+    background-color: rgb(228, 50, 50);
+    color: white;
+}
