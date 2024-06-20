@@ -25,7 +25,7 @@ export default function ChartsSection() {
                     {
                         options.map(element =>
                             <button className="option h-[70%] text-[18px] font-[400] ml-[20px]"
-                                id={currentOption == element ? "chosenOption" : "option"}
+                                id={currentOption == element ? "chosenOption" : "option"} key={element}
                                 onClick={changeOption}>
                                 {element}
                             </button>

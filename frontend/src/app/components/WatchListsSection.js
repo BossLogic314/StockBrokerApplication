@@ -326,7 +326,7 @@ export default function WatchListsSection() {
             <div className="stockExchangesStatsSection flex flex-row border-black border-b-[1px]" id="stockExchangesStatsSection">
                 {
                     headerStocks.map((element) => (
-                        <HeaderStock stock={element} liveMarketData={liveMarketData[element.instrumentKey]} />
+                        <HeaderStock stock={element} liveMarketData={liveMarketData[element.instrumentKey]} key={element.instrumentKey} />
                     ))
                 }
             </div>
@@ -336,7 +336,7 @@ export default function WatchListsSection() {
                     id="watchLists">
                     {
                         watchLists.map((element, index) => (
-                            <div className="watchListDiv inline">
+                            <div className="watchListDiv inline" key={index}>
                                 <div className="watchList inline h-[85%] mx-[3px] px-[5px] py-[1px] text-[17.5px] font-[400] max-w-[50%] rounded-[7px] truncate ... hover:cursor-pointer"
                                     id={currentWatchList != null && currentWatchList.name == element.name ? "chosenWatchList" : "watchList"}
                                     key={index} index={index} onClick={watchListClicked}>
@@ -409,6 +409,7 @@ export default function WatchListsSection() {
                                 deleteStockFromWatchList={deleteStockFromWatchList}
                                 placeOrder={placeOrder}
                                 liveMarketData={liveMarketData[element.instrumentKey]}
+                                key={element.instrumentKey}
                             />
                         ))
                     ) :
