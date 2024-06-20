@@ -319,7 +319,7 @@ export default function WatchListsSection() {
         script.async = true;
     
         document.body.appendChild(script);
-    }, [])
+    }, []);
 
     return (
         <div className="stocksSection h-full w-[340px] min-w-[340px] flex flex-col border-black border-[1px]">
