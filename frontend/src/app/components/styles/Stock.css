@@ -1,0 +1,32 @@
+#chosenStock {
+    border-right: 4px solid rgb(33, 125, 237);
+    border-bottom: 3px solid rgb(33, 125, 237);
+}
+
+#positivePrice, #positiveGrowth {
+    color: rgb(35, 137, 35);
+}
+
+#negativePrice, #negativeGrowth {
+    color: rgb(230, 15, 15);
+}
+
+#buy {
+    color: rgb(35, 137, 35);
+    border: 1.5px solid rgb(35, 137, 35);
+}
+
+#buy:hover {
+    color: white;
+    background-color: rgb(35, 137, 35);
+}
+
+#sell {
+    color: rgb(228, 50, 50);
+    border: 1.5px solid rgb(228, 50, 50);
+}
+
+#sell:hover {
+    color: white;
+    background-color: rgb(228, 50, 50);
+}

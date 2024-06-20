@@ -12,6 +12,8 @@ import axios from 'axios';
 import AddScriptDropdown from './AddScripDropdown';
 import PlaceOrderDropdown from './PlaceOrderDropdown';
 import DeleteWatchListWarning from './DeleteWatchListWarning';
+import HeaderStock from './HeaderStock';
+import Stock from './Stock';
 import io from "socket.io-client";
 import { signOut } from '../../../utils/UserProfile';
 import './styles/WatchListsSection.css';
@@ -258,8 +260,15 @@ export default function WatchListsSection() {
         }
         const newSocket = io('http://localhost:8086/');
 
-        newSocket.on('market data', (liveMarketData) => {
-            setLiveMarketData(JSON.parse(liveMarketData));
+        newSocket.on('market data', (updatedLiveMarketData) => {
+
+            updatedLiveMarketData = JSON.parse(updatedLiveMarketData);
+            let liveMarketDataCopy = [...liveMarketData];
+
+            for (let i = 0; i < updatedLiveMarketData.length; ++i) {
+                liveMarketDataCopy[updatedLiveMarketData[i].instrumentKey] = updatedLiveMarketData[i];
+            }
+            setLiveMarketData(liveMarketDataCopy);
         });
 
         setSocket(newSocket);
@@ -317,43 +326,7 @@ export default function WatchListsSection() {
             <div className="stockExchangesStatsSection flex flex-row border-black border-b-[1px]" id="stockExchangesStatsSection">
                 {
                     headerStocks.map((element) => (
-                        <div className="stock h-[60px] w-[50%] flex flex-row">
-                            <div className="stockInformation h-full w-[50%] pl-[10px] flex flex-col justify-center border-black border-l-[1px]"
-                                id="stockInformation">
-                                <div className="name text-[14px] font-[500] truncate ...">{element.name}</div>
-                                <div className="exchange text-[11px] font-[360] truncate ...">{element.exchange}</div>
-                            </div>
-                            {
-                                liveMarketData.find((el) => el.instrumentKey == element.instrumentKey) ?
-                                <div className="stockPrice w-full mr-[5%] mt-[2px]">
-                                    <div className="price h-[50%] text-[14px] pt-[8px] font-[480] flex justify-end truncate ..."
-                                        id={liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
-                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
-                                            "positivePrice" : "negativePrice"}>
-                                        {
-                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
-                                        }
-                                    </div>
-                                    <div className="growth h-[50%] text-[12px] flex justify-end truncate ..."
-                                        id={liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
-                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
-                                            "positiveGrowth" : "negativeGrowth"}>
-                                        {
-                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
-                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
-                                            ("+") : ("")
-                                        }
-                                        {
-                                            ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
-                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
-                                            liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
-                                        }
-                                        %
-                                    </div>
-                                </div> :
-                                <></>
-                            }
-                        </div>
+                        <HeaderStock stock={element} liveMarketData={liveMarketData[element.instrumentKey]} />
                     ))
                 }
             </div>
@@ -429,72 +402,14 @@ export default function WatchListsSection() {
                     (
                         currentWatchList.stocks.map((element, index) =>
                         (
-                            <div className="stock h-[65px] flex flex-row hover:cursor-pointer border-black border-b-[1px]"
-                                id={currentStock != null && currentStock.instrumentKey == element.instrumentKey ? "chosenStock" : "stock"} instrument-key={element.instrumentKey} key={index} index={index}
-                                onMouseEnter={hoveringOnStock} onMouseLeave={notHoveringOnStock}
-                                onClick={stockClicked}>
-                                <div className="stockInformation min-w-[70%] flex flex-col justify-center pl-[10px] pr-[5px]"
-                                    index={index} instrument-key={element.instrumentKey}>
-                                    <div className="name text-[17px] font-[450] truncate ..." index={index} instrument-key={element.instrumentKey}>
-                                        {element.name}
-                                    </div>
-                                    <div className="exchange text-[12px] font-[360] truncate ..." index={index} instrument-key={element.instrumentKey}>
-                                        {element.exchange}
-                                    </div>
-                                </div>
-
-                                {
-                                    hoveringStockIndex != index ?
-                                    (
-                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey) ?
-                                        (
-                                            <div className="stockPrice w-full mr-[5%] mt-[2px]" index={index}>
-                                                <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
-                                                    id={liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
-                                                        "positivePrice" : "negativePrice"} index={index}>
-                                                    {
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.ltp
-                                                    }
-                                                </div>
-                                                <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
-                                                    id={liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
-                                                        "positiveGrowth" : "negativeGrowth"} index={index}>
-                                                    {
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D >
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D ?
-                                                        ("+") : ("")
-                                                    }
-                                                    {
-                                                        ((liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.close1D -
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D) /
-                                                        liveMarketData.find((el) => el.instrumentKey == element.instrumentKey)?.open1D * 100).toFixed(2)
-                                                    }
-                                                    %
-                                                </div>
-                                            </div>
-                                        ) :
-                                        <></>
-                                    ) :
-                                    (
-                                        <div className="stockEditOptions flex flex-row grow h-full w-[30%] justify-center items-center"
-                                            instrument-key={element.instrumentKey}>
-                                            <div className="buy mx-[5px] px-[5px] font-[450] rounded-[5px]"
-                                                id="buy" index={index} onClick={placeOrder}>
-                                                B
-                                            </div>
-                                            <div className="sell mx-[5px] px-[5px] font-[450] rounded-[5px]"
-                                                id="sell" index={index} onClick={placeOrder}>
-                                                S
-                                            </div>
-                                            <i className="delete fa-solid fa-trash fa-lg h-[30px] w-[30px] mr-[8px] mt-[5px] pt-[12px] pl-[3px] ml-[5px] h-[30px] mr-[10px] px-[5px]"
-                                                id="delete" instrument-key={element.instrumentKey} onClick={deleteStockFromWatchList}>
-                                            </i>
-                                        </div>
-                                    )
-                                }
-                            </div>
+                            <Stock
+                                stock={element} index={index} stockClicked={stockClicked}
+                                hoveringOnStock={hoveringOnStock} notHoveringOnStock={notHoveringOnStock}
+                                hoveringStockIndex={hoveringStockIndex}
+                                deleteStockFromWatchList={deleteStockFromWatchList}
+                                placeOrder={placeOrder}
+                                liveMarketData={liveMarketData[element.instrumentKey]}
+                            />
                         ))
                     ) :
                     <></>

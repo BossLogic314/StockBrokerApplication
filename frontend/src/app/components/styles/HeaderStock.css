@@ -1,0 +1,12 @@
+#chosenStock {
+    border-right: 4px solid rgb(33, 125, 237);
+    border-bottom: 3px solid rgb(33, 125, 237);
+}
+
+#positivePrice, #positiveGrowth {
+    color: rgb(35, 137, 35);
+}
+
+#negativePrice, #negativeGrowth {
+    color: rgb(230, 15, 15);
+}
