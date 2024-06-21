@@ -92,7 +92,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                     {
                         products.map((element) => (
                             <div className="productButton text-[16px] rounded-[4px] mx-[8px] px-[6px] py-[4px] hover:cursor-pointer"
-                                id={product == element ? "chosenProductButton" : "productButton"} onClick={productButtonClicked}>
+                                id={product == element ? "chosenProductButton" : "productButton"} onClick={productButtonClicked} key={element}>
                                 {element}
                             </div>
                         ))
@@ -121,7 +121,8 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                         {
                             orderTypes.map((element) => (
                                 <div className="orderTypeButton text-[16px] rounded-[4px] mx-[10px] px-[6px] py-[4px] hover:cursor-pointer"
-                                    id={orderType == element ? "chosenOrderTypeButton" : "orderTypeButton"} onClick={orderTypeButtonClicked}>
+                                    id={orderType == element ? "chosenOrderTypeButton" : "orderTypeButton"} onClick={orderTypeButtonClicked}
+                                    key={element}>
                                     {element}
                                 </div>
                             ))
