@@ -26,7 +26,7 @@ export default function UserProfile() {
         }
         // The user needs to login again
         catch(error) {
-            router.replace('/');
+            signOut();
         }
     });
 
