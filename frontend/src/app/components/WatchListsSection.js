@@ -139,8 +139,7 @@ export default function WatchListsSection() {
         setOrderingStock(currentWatchList.stocks[index]);
         setDisplayPlaceOrderDropdown(true);
 
-        const liveMarketDataOfOrderingStock =
-            liveMarketData.find((element) => element.instrumentKey == currentWatchList.stocks[index].instrumentKey);
+        const liveMarketDataOfOrderingStock = liveMarketData[currentWatchList.stocks[index].instrumentKey];
         setLiveMarketDataOfOrderingStock(liveMarketDataOfOrderingStock);
     }
 

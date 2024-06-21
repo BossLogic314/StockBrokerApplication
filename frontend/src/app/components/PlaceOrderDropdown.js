@@ -31,6 +31,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
 
     }, []);
 
+    console.log(liveMarketDataOfOrderingStock);
     return (
         <div className="placeOrder h-full w-[30px] absolute top-0 left-[340px] w-[350px] flex flex-col z-10" id="placeOrder">
             <div className="header w-full h-[60px] flex flex-row border-black border-t-[1px] border-r-[1px] border-b-[1px]">
