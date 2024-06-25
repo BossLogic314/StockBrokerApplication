@@ -4,13 +4,13 @@ import { useRouter } from 'next/navigation';
 import { usePlaceOrderDropdownStore } from '../../../zustand/usePlaceOrderDropdownStore';
 import { signOut } from '../../../utils/UserProfile';
 import './styles/PlaceOrderDropdown.css';
+import axios from 'axios';
 
 export default function PlaceOrderDropdown({stock, toBuy}) {
 
     const {liveMarketDataOfOrderingStock, setDisplayPlaceOrderDropdown} = usePlaceOrderDropdownStore();
     const [product, setProduct] = useState('DELIVERY');
     const [orderType, setOrderType] = useState('MARKET');
-    const router = useRouter();
 
     const products = ['DELIVERY', 'INTRADAY'];
     const orderTypes = ['MARKET', 'LIMIT'];
@@ -27,11 +27,27 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
         setOrderType(event.target.textContent);
     }
 
+    const placeOrder = async (event) => {
+        console.log(event.target.id);
+
+        try {
+            const response = await axios.get('http://localhost:8088/user/getOrders',
+            {
+                withCredentials: true
+            });
+            console.log(response);
+        }
+        // The user has to login again
+        catch(error) {
+            console.log(error);
+            //signOut();
+        }
+    }
+
     useEffect(() => {
 
     }, []);
 
-    console.log(liveMarketDataOfOrderingStock);
     return (
         <div className="placeOrder h-full w-[30px] absolute top-0 left-[340px] w-[350px] flex flex-col z-10" id="placeOrder">
             <div className="header w-full h-[60px] flex flex-row border-black border-t-[1px] border-r-[1px] border-b-[1px]">
@@ -110,7 +126,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                     <div className="price w-[50%]">
                         <div className="priceText text-[16px] font-[450] pl-[14px]">Price</div>
                         <input className="price w-[85%] mt-[3px] ml-[12px] pl-[5px] py-[1px] text-[19px] font-[300] rounded-[4px] border-black border-[1px]"
-                            type="number" min="1" value={liveMarketDataOfOrderingStock?.ltp}>
+                            type="number" min="1" defaultValue={liveMarketDataOfOrderingStock?.ltp}>
                         </input>
                     </div>
                 </div>
@@ -133,7 +149,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
 
                 <div className="placeOrderButtonDiv mt-[20px] flex justify-center">
                     <div className="placeOrderButton w-[90%] text-[16px] font-[500] rounded-[4px] mx-[10px] px-[6px] py-[4px] text-center hover:cursor-pointer"
-                        id={toBuy ? "buyButton" : "sellButton"}>
+                        id={toBuy ? "buyButton" : "sellButton"} onClick={placeOrder}>
                         {toBuy ? "BUY STOCK" : "SELL STOCK"}
                     </div>
                 </div>

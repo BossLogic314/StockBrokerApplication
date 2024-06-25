@@ -2,7 +2,6 @@
 import { useEffect } from 'react';
 import { useChartsStore } from '../../../zustand/useChartsStore';
 import { createChart } from 'lightweight-charts';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { signOut } from '../../../utils/UserProfile';
 import './styles/ChartsTab.css';
@@ -10,7 +9,6 @@ import './styles/ChartsTab.css';
 export default function ChartsSection() {
 
     const {currentStock, setCurrentStock, currentScale, setCurrentScale} = useChartsStore();
-    const router = useRouter();
     const scales = ['1 min', '30 min', '1 day', '1 week', '1 month'];
 
     useEffect(() => {
@@ -82,20 +80,20 @@ export default function ChartsSection() {
         currentStock != null ?
         (
             <div className="chartsHeader flex flex-col flex-grow h-full">
-                <div className="currentStockName text-[23px] font-[500] ml-[20px] mt-[5px]">{currentStock.name}</div>
+                <div className="currentStockName text-[25px] font-[500] ml-[15px] mr-[5px] mt-[5px] py-[2px]">{currentStock.name}</div>
                 <div className="scales mt-[5px] flex flex-row">
                     {
                         scales.map(element =>
                             (
                                 currentScale == element ?
                                 (
-                                    <div className="1min rounded-[4px] ml-[20px] px-[5px] text-[15px] hover:cursor-pointer border-black border-[1px]"
+                                    <div className="1min rounded-[4px] ml-[15px] mr-[5px] px-[5px] text-[15px] hover:cursor-pointer border-black border-[1px]"
                                         id="chosenScale" onClick={changeScale} key={element}>
                                         {element}
                                     </div>
                                 ) :
                                 (
-                                    <div className="1min rounded-[4px] ml-[20px] px-[5px] text-[15px] hover:cursor-pointer border-black border-[1px]"
+                                    <div className="1min rounded-[4px] ml-[15px] mr-[5px] px-[5px] text-[15px] hover:cursor-pointer border-black border-[1px]"
                                         id="scale" onClick={changeScale} key={element}>
                                         {element}
                                     </div>

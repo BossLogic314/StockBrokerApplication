@@ -3,12 +3,14 @@ import { useEffect } from 'react';
 import UserProfile from './UserProfile';
 import { useChartsStore } from '../../../zustand/useChartsStore';
 import ChartsTab from './ChartsTab';
+import OrdersTab from './OrdersTab';
+import HoldingsTab from './HoldingsTab';
 import './styles/ChartsSection.css';
 
 export default function ChartsSection() {
 
     const {currentOption, setCurrentOption} = useChartsStore();
-    const options = ['Charts', 'Orders', 'Positions', 'Holdings'];
+    const options = ['Charts', 'Orders', 'Holdings'];
 
     useEffect(() => {
     }, []);
@@ -20,11 +22,11 @@ export default function ChartsSection() {
 
     return (
         <div className="chartsSection flex flex-col w-full">
-            <div className="navBar w-full flex flex-row min-h-[60px] max-h-[60px] border-black border-t-[1px] border-r-[1px] border-b-[1px]">
+            <div className="navBar w-full flex flex-row min-h-[61px] max-h-[61px] border-black border-t-[1px] border-r-[1px] border-b-[1px]">
                 <div className="options flex flex-row justify-center items-center">
                     {
                         options.map(element =>
-                            <button className="option h-[70%] text-[18px] font-[400] ml-[20px]"
+                            <button className="option h-[70%] text-[18px] font-[400] ml-[15px] mr-[5px]"
                                 id={currentOption == element ? "chosenOption" : "option"} key={element}
                                 onClick={changeOption}>
                                 {element}
@@ -39,6 +41,16 @@ export default function ChartsSection() {
             {
                 currentOption == 'Charts' ?
                 <ChartsTab /> :
+                <></>
+            }
+            {
+                currentOption == 'Orders' ?
+                <OrdersTab /> :
+                <></>
+            }
+            {
+                currentOption == 'Holdings' ?
+                <HoldingsTab /> :
                 <></>
             }
         </div>
