@@ -1,0 +1,42 @@
+#ordersTab {
+    border: 1px solid #ebe9e9;
+}
+
+#ordersHeader {
+    background-color: #ebe9e9;
+}
+
+#orders {
+}
+
+#order {
+    border: 1px solid #ebe9e9;
+}
+
+#buyText {
+    color: rgb(35, 137, 35);
+}
+
+#sellText {
+    color: rgb(225, 29, 29);
+}
+
+#complete {
+    color: rgb(5, 109, 5);
+    background-color: rgb(190, 255, 190);
+}
+
+#rejected {
+    color: rgb(171, 0, 0);
+    background-color: rgb(255, 180, 180);
+}
+
+#cancelled {
+    color: rgb(157, 89, 0);
+    background-color: rgb(255, 252, 163);
+}
+
+#amo {
+    color: rgb(0, 81, 204);
+    background-color: rgb(198, 255, 254);
+}
