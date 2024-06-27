@@ -27,7 +27,6 @@ export default function OrdersTab() {
         getOrders();
     }, []);
 
-    console.log(orders);
     return (
         <div className="ordersTab flex flex-col flex-grow my-[20px] mx-[20px] overflow-y-hidden" id="ordersTab">
             <div className="ordersHeader h-[50px] flex flex-row" id="ordersHeader">
