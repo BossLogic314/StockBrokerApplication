@@ -6,7 +6,7 @@ import './styles/OrdersTab.css';
 export default function OrdersTab() {
 
     const [orders, setOrders] = useState([]);
-    const ordersHeaderFields = ['Stock', 'Type', 'Status', 'Quantity', 'Price', 'Trigger Price'];
+    const ordersHeaderFields = ['Symbol', 'Type', 'Status', 'Quantity', 'Price', 'Trigger Price'];
 
     const getOrders = async () => {
         try {
@@ -32,7 +32,7 @@ export default function OrdersTab() {
                 {
                     ordersHeaderFields.map((element, index) => (
                         <div className="ordersHeaderField w-[20%] min-w-[120px] text-[17px] font-[500] flex justify-center items-center" key={index}>
-                            {element == 'Stock' ? `Stock (${orders.length})` : element}
+                            {element == 'Symbol' ? `Symbol (${orders.length})` : element}
                         </div>
                     ))
                 }
@@ -42,9 +42,9 @@ export default function OrdersTab() {
                 {
                     orders.map((element, index) => (
                         <div className="order h-[65px] flex flex-row" key={index} id="order">
-                            <div className="stockEntry flex flex-col justify-center items-center h-full w-[20%] min-w-[120px]">
-                                <div className="stockNameEntry text-[15px] font-[500] truncate ...">{element.tradingsymbol}</div>
-                                <div className="stockExchangeEntry text-[11px] font-[360] truncate ...">{`${element.exchange}_INDEX`}</div>
+                            <div className="symbolEntry flex flex-col justify-center items-center h-full w-[20%] min-w-[120px]">
+                                <div className="symbolNameEntry text-[15px] font-[500] truncate ...">{element.tradingsymbol}</div>
+                                <div className="symbolExchangeEntry text-[11px] font-[360] truncate ...">{`${element.exchange}_INDEX`}</div>
                             </div>
                             <div className="typeEntry flex justify-center items-center h-full w-[20%] min-w-[120px] truncate ...">
                                 <div className="typeText px-[12px] py-[4px] rounded-[10px] text-[16px] font-[500]"
