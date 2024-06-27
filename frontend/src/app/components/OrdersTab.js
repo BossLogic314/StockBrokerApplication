@@ -14,7 +14,6 @@ export default function OrdersTab() {
             {
                 withCredentials: true
             });
-            console.log(response);
             setOrders(response.data.orders.data);
         }
         // The user has to login again
