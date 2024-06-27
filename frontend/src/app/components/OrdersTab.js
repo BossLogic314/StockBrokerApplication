@@ -27,7 +27,7 @@ export default function OrdersTab() {
     }, []);
 
     return (
-        <div className="ordersTab flex flex-col flex-grow my-[20px] mx-[20px] overflow-y-hidden" id="ordersTab">
+        <div className="ordersTab flex flex-col flex-grow my-[20px] mx-[20px] overflow-y-hidden overflow-x-hidden" id="ordersTab">
             <div className="ordersHeader h-[50px] flex flex-row" id="ordersHeader">
                 {
                     ordersHeaderFields.map((element, index) => (
@@ -38,12 +38,12 @@ export default function OrdersTab() {
                 }
             </div>
 
-            <div className="orders flex-grow overflow-y-auto" id="orders">
+            <div className="orders flex-grow overflow-y-auto overflow-x-hidden" id="orders">
                 {
                     orders.map((element, index) => (
                         <div className="order h-[65px] flex flex-row" key={index} id="order">
                             <div className="stockEntry flex flex-col justify-center items-center h-full w-[20%] min-w-[120px]">
-                                <div className="stockNameEntry text-[14px] font-[500] truncate ...">{element.tradingsymbol}</div>
+                                <div className="stockNameEntry text-[15px] font-[500] truncate ...">{element.tradingsymbol}</div>
                                 <div className="stockExchangeEntry text-[11px] font-[360] truncate ...">{`${element.exchange}_INDEX`}</div>
                             </div>
                             <div className="typeEntry flex justify-center items-center h-full w-[20%] min-w-[120px] truncate ...">
