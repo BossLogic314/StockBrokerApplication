@@ -4,13 +4,14 @@ import UserProfile from './UserProfile';
 import { useChartsStore } from '../../../zustand/useChartsStore';
 import ChartsTab from './ChartsTab';
 import OrdersTab from './OrdersTab';
+import PositionsTab from './PositionsTab';
 import HoldingsTab from './HoldingsTab';
 import './styles/ChartsSection.css';
 
 export default function ChartsSection() {
 
     const {currentOption, setCurrentOption} = useChartsStore();
-    const options = ['Charts', 'Orders', 'Holdings'];
+    const options = ['Charts', 'Orders', 'Positions', 'Holdings'];
 
     useEffect(() => {
     }, []);
@@ -46,6 +47,11 @@ export default function ChartsSection() {
             {
                 currentOption == 'Orders' ?
                 <OrdersTab /> :
+                <></>
+            }
+            {
+                currentOption == 'Positions' ?
+                <PositionsTab /> :
                 <></>
             }
             {
