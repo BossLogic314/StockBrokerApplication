@@ -6,7 +6,7 @@ import './styles/OrdersTab.css';
 export default function OrdersTab() {
 
     const [orders, setOrders] = useState([]);
-    const ordersHeaderFields = ['STOCK', 'TYPE', 'STATUS', 'QUANTITY', 'PRICE', 'TRIGGER PRICE'];
+    const ordersHeaderFields = ['Stock', 'Type', 'Status', 'Quantity', 'Price', 'Trigger Price'];
 
     const getOrders = async () => {
         try {
