@@ -34,7 +34,7 @@ export default function OrdersTab() {
                 {
                     ordersHeaderFields.map((element, index) => (
                         <div className="ordersHeaderField w-[20%] min-w-[120px] text-[16px] font-[500] flex justify-center items-center" key={index}>
-                            {element}
+                            {element == 'STOCK' ? `STOCK (${orders.length})` : element}
                         </div>
                     ))
                 }
