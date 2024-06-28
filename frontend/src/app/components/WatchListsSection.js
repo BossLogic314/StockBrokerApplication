@@ -106,9 +106,8 @@ export default function WatchListsSection() {
             signOut();
         }
 
-        // Updating watchlists and the current watchlist
+        // Updating watchlists
         const newWatchLists = await getWatchLists();
-        setCurrentWatchListIndex(newWatchLists.length - 1);
     }
 
     const hoveringOnWatchList = (event) => {
@@ -337,7 +336,7 @@ export default function WatchListsSection() {
                         watchLists.map((element, index) => (
                             <div className="watchListDiv inline" key={index}>
                                 <div className="watchList inline h-[85%] mx-[3px] px-[5px] py-[1px] text-[17.5px] font-[400] max-w-[50%] rounded-[7px] truncate ... hover:cursor-pointer"
-                                    id={currentWatchList != null && currentWatchList.name == element.name ? "chosenWatchList" : "watchList"}
+                                    id={currentWatchListIndex != null && currentWatchListIndex == index ? "chosenWatchList" : "watchList"}
                                     key={index} index={index} onClick={watchListClicked}>
                                     {element.name}
                                 </div>
