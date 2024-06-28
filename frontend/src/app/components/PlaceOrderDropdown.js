@@ -45,7 +45,6 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
     }
 
     useEffect(() => {
-
     }, []);
 
     return (
@@ -63,7 +62,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                 </div>
             </div>
 
-            <div className="h-[65px] flex flex-row hover:cursor-pointer border-black border-b-[1px] border-r-[1px]"
+            <div className="h-[65px] flex flex-row border-black border-b-[1px] border-r-[1px]"
                 id="stockToPlaceOrderOn">
                 <div className="min-w-[70%] flex flex-col justify-center pl-[12px] pr-[5px]">
                     <div className="name text-[17px] font-[450] truncate ...">
@@ -125,9 +124,19 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                     </div>
                     <div className="price w-[50%]">
                         <div className="priceText text-[16px] font-[450] pl-[14px]">Price</div>
-                        <input className="price w-[85%] mt-[3px] ml-[12px] pl-[5px] py-[1px] text-[19px] font-[300] rounded-[4px] border-black border-[1px]"
-                            type="number" min="1" defaultValue={liveMarketDataOfOrderingStock?.ltp}>
-                        </input>
+                        {
+                            orderType == 'MARKET' ?
+                            (
+                                <input className="price w-[85%] mt-[3px] ml-[12px] py-[1px] text-[18px] font-[300] rounded-[4px] text-center border-black border-[1px]"
+                                    type="text" value="MARKET PRICE" readOnly>
+                                </input>
+                            ) :
+                            (
+                                <input className="price w-[85%] mt-[3px] ml-[12px] pl-[5px] py-[1px] text-[19px] font-[300] rounded-[4px] border-black border-[1px]"
+                                    type="number" min="1" defaultValue={liveMarketDataOfOrderingStock?.ltp}>
+                                </input>
+                            )
+                        }
                     </div>
                 </div>
 
