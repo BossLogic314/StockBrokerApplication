@@ -1,5 +1,5 @@
 #ordersTab {
-    border: 1px solid #ebe9e9;
+    border: 2px solid #ebe9e9;
 }
 
 #ordersHeader {
@@ -7,7 +7,7 @@
 }
 
 #order {
-    border: 1px solid #ebe9e9;
+    border-bottom: 2px solid #ebe9e9;
 }
 
 #buyText {
