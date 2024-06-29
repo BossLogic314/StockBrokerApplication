@@ -6,6 +6,10 @@
     background-color: #ebe9e9;
 }
 
+#closePlaceOrderDropdownButtonDiv {
+    background-color: #ebe9e9;
+}
+
 #closePlaceOrderDropdownButtonDiv:hover {
     background-color: rgb(227, 48, 48);
     color: white;
