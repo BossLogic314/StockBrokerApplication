@@ -11,9 +11,27 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
     const {liveMarketDataOfOrderingStock, setDisplayPlaceOrderDropdown} = usePlaceOrderDropdownStore();
     const [product, setProduct] = useState('DELIVERY');
     const [orderType, setOrderType] = useState('MARKET');
+    const [availableFunds, setAvailableFunds] = useState(null);
+    const [requiredFunds, setRequiredFunds] = useState(null);
+    const [stockQuantity, setStockQuantity] = useState(1);
+    const [limitOrderPrice, setLimitOrderPrice] = useState(1);
 
     const products = ['DELIVERY', 'INTRADAY'];
     const orderTypes = ['MARKET', 'LIMIT'];
+
+    const getFundsAndMargin = async() => {
+        try {
+            const response = await axios.get('http://localhost:8088/user/getFundsAndMargin',
+            {
+                withCredentials: true
+            });
+            setAvailableFunds(response.data.fundsAndMargin.data.equity.available_margin.toFixed(2));
+        }
+        // The user has to login again
+        catch(error) {
+            signOut();
+        }
+    }
 
     const closeButtonClicked = () => {
         setDisplayPlaceOrderDropdown(false);
@@ -25,6 +43,17 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
 
     const orderTypeButtonClicked = (event) => {
         setOrderType(event.target.textContent);
+    }
+
+    const changeStockQuantity = (event) => {
+
+        const newStockQuantity = Number(event.target.value);
+
+        // Not an integer or less than 1
+        if (!Number.isInteger(newStockQuantity) || newStockQuantity < 0 || newStockQuantity > 100) {
+            return;
+        }
+        setStockQuantity(newStockQuantity);
     }
 
     const placeOrder = async (event) => {
@@ -45,6 +74,18 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
     }
 
     useEffect(() => {
+        if (orderType == 'MARKET') {
+            const newRequiredFundsValue = (stockQuantity * liveMarketDataOfOrderingStock.ltp).toFixed(2);
+            setRequiredFunds(newRequiredFundsValue);
+        }
+        else {
+            const newRequiredFundsValue = (stockQuantity * limitOrderPrice).toFixed(2);
+            setRequiredFunds(newRequiredFundsValue);
+        }
+    }, [stockQuantity, orderType, limitOrderPrice])
+
+    useEffect(() => {
+        getFundsAndMargin();
     }, []);
 
     return (
@@ -117,7 +158,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                     <div className="quantity w-[50%] flex flex-col">
                         <div className="quantityText text-[16px] font-[450] pl-[14px]">Quantity</div>
                         <input className="quantity w-[85%] mt-[3px] ml-[12px] pl-[5px] py-[1px] text-[19px] font-[300] rounded-[4px] border-black border-[1px]"
-                            type="number" min="1" max="100" defaultValue="1">
+                            type="number" min="1" value={stockQuantity} onChange={changeStockQuantity}>
                         </input>
                     </div>
                     <div className="price w-[50%]">
@@ -131,7 +172,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                             ) :
                             (
                                 <input className="price w-[85%] mt-[3px] ml-[12px] pl-[5px] py-[1px] text-[19px] font-[300] rounded-[4px] border-black border-[1px]"
-                                    type="number" min="1" defaultValue={liveMarketDataOfOrderingStock?.ltp}>
+                                    type="number" min="1" value={limitOrderPrice} onChange={(e) => (setLimitOrderPrice(e.target.value))}>
                                 </input>
                             )
                         }
@@ -154,7 +195,23 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                     </div>
                 </div>
 
-                <div className="placeOrderButtonDiv mt-[20px] flex justify-center">
+                {
+                    !toBuy ? <></> :
+                    <div className="fundsAndPrice flex flex-row mt-[12px]">
+                        <div className="requiredFunds flex-grow text-center">
+                            {requiredFunds == null ? "" : "Required: "}
+                            {requiredFunds == null ? "" : <span className="rupeeSign mr-[2px]">&#8377;</span>}
+                            {requiredFunds == null ? "" : requiredFunds}
+                        </div>
+                        <div className="availableFunds flex-grow text-center">
+                            {availableFunds == null ? "" : "Available: "}
+                            {availableFunds == null ? "" : <span className="rupeeSign mr-[2px]">&#8377;</span>}
+                            {availableFunds == null ? "" : availableFunds}
+                        </div>
+                    </div>
+                }
+
+                <div className={toBuy ? "mt-[5px] flex justify-center" : "mt-[15px] flex justify-center"}>
                     <div className="placeOrderButton w-[90%] text-[16px] font-[500] rounded-[4px] mx-[10px] px-[6px] py-[4px] text-center hover:cursor-pointer"
                         id={toBuy ? "buyButton" : "sellButton"} onClick={placeOrder}>
                         {toBuy ? "BUY STOCK" : "SELL STOCK"}

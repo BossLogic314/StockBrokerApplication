@@ -141,7 +141,7 @@ export const getFundsAndMargin = (async (req, res) => {
   
   axios.get(url, { headers })
     .then(response => {
-      res.status(200).json({orders: response.data});
+      res.status(200).json({fundsAndMargin: response.data});
     })
     .catch(error => {
       res.status(500).json({message: "Server error!"});
