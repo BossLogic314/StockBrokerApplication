@@ -19,7 +19,8 @@ function HeaderStock({stock, liveMarketData}) {
                 <div className="price h-[50%] text-[14px] pt-[8px] font-[480] flex justify-end truncate ..."
                     id={liveMarketData?.close1D > liveMarketData?.open1D ?
                     "positivePrice" : "negativePrice"}>
-                    {liveMarketData?.ltp}
+                        {liveMarketData == null ? "" : <span className="rupeeSign mr-[2px]">&#8377;</span>}
+                        {liveMarketData == null ? "" : ((liveMarketData?.ltp * 100) / 100).toFixed(2)}
                 </div>
                 <div className="growth h-[50%] text-[12px] flex justify-end truncate ..."
                     id={liveMarketData?.close1D > liveMarketData?.open1D ? "positiveGrowth" : "negativeGrowth"}>

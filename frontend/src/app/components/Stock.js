@@ -34,9 +34,8 @@ function Stock({stock, index, stockClicked, hoveringOnStock, notHoveringOnStock,
                         <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
                             id={liveMarketData?.close1D > liveMarketData?.open1D ?
                                 "positivePrice" : "negativePrice"} index={index}>
-                            {
-                                liveMarketData?.ltp
-                            }
+                            {liveMarketData == null ? "" : <span className="rupeeSign mr-[2px]">&#8377;</span>}
+                            {liveMarketData == null ? "" : (liveMarketData?.ltp * 100 / 100).toFixed(2)}
                         </div>
                         <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
                             id={liveMarketData?.close1D > liveMarketData?.open1D ?
