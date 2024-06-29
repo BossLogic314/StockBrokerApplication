@@ -1,11 +1,19 @@
-#holdingsTab {
+#holdingsInformation {
     border: 2px solid #ebe9e9;
 }
 
-#holdingsHeader {
+#holdingsHeader, #investmentDetailsDiv {
     background-color: #ebe9e9;
 }
 
 #holding {
     border-bottom: 2px solid #ebe9e9;
+}
+
+#positiveOverallProfitLossAmount, #positiveOverallProfitLossEntry, #positiveOverallPercentageEntry {
+    color: rgb(35, 137, 35);
+}
+
+#negativeOverallProfitLossAmount, #negativeOverallProfitLossEntry, #negativeOverallPercentageEntry {
+    color: rgb(230, 15, 15);
 }
