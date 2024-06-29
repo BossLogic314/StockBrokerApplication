@@ -11,6 +11,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
     const {liveMarketDataOfOrderingStock, setDisplayPlaceOrderDropdown} = usePlaceOrderDropdownStore();
     const [product, setProduct] = useState('DELIVERY');
     const [orderType, setOrderType] = useState('MARKET');
+    const [afterMarketOrder, setAfterMarketOrder] = useState(false);
     const [availableFunds, setAvailableFunds] = useState(null);
     const [requiredFunds, setRequiredFunds] = useState(null);
     const [stockQuantity, setStockQuantity] = useState(1);
@@ -33,6 +34,26 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
         }
     }
 
+    const placeOrder = async (event) => {
+        console.log(event.target.id);
+
+        try {
+            const response = await axios.post('http://localhost:8088/user/placeOrder',
+            {
+
+            },
+            {
+                withCredentials: true
+            });
+            console.log(response);
+        }
+        // The user has to login again
+        catch(error) {
+            console.log(error);
+            //signOut();
+        }
+    }
+
     const closeButtonClicked = () => {
         setDisplayPlaceOrderDropdown(false);
     }
@@ -43,6 +64,10 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
 
     const orderTypeButtonClicked = (event) => {
         setOrderType(event.target.textContent);
+    }
+
+    const afterMarketHoursButtonClicked = (event) => {
+        setAfterMarketOrder(!afterMarketOrder);
     }
 
     const changeStockQuantity = (event) => {
@@ -56,25 +81,25 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
         setStockQuantity(newStockQuantity);
     }
 
-    const placeOrder = async (event) => {
-        console.log(event.target.id);
+    const changeLimitOrderPrice = (event) => {
 
-        try {
-            const response = await axios.get('http://localhost:8088/user/getOrders',
-            {
-                withCredentials: true
-            });
-            console.log(response);
+        const newLimitOrderPrice = Number(event.target.value);
+
+        if (newLimitOrderPrice < 0) {
+            return;
         }
-        // The user has to login again
-        catch(error) {
-            console.log(error);
-            //signOut();
-        }
+        setLimitOrderPrice(newLimitOrderPrice);
     }
 
     useEffect(() => {
+
         if (orderType == 'MARKET') {
+
+            // Market data did not load yet
+            if (liveMarketDataOfOrderingStock == null) {
+                setRequiredFunds(null);
+                return;
+            }
             const newRequiredFundsValue = (stockQuantity * liveMarketDataOfOrderingStock.ltp).toFixed(2);
             setRequiredFunds(newRequiredFundsValue);
         }
@@ -82,7 +107,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
             const newRequiredFundsValue = (stockQuantity * limitOrderPrice).toFixed(2);
             setRequiredFunds(newRequiredFundsValue);
         }
-    }, [stockQuantity, orderType, limitOrderPrice])
+    }, [stockQuantity, orderType, limitOrderPrice, liveMarketDataOfOrderingStock])
 
     useEffect(() => {
         getFundsAndMargin();
@@ -172,7 +197,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                             ) :
                             (
                                 <input className="price w-[85%] mt-[3px] ml-[12px] pl-[5px] py-[1px] text-[19px] font-[300] rounded-[4px] border-black border-[1px]"
-                                    type="number" min="1" value={limitOrderPrice} onChange={(e) => (setLimitOrderPrice(e.target.value))}>
+                                    type="number" min="1" value={limitOrderPrice} onChange={changeLimitOrderPrice}>
                                 </input>
                             )
                         }
@@ -195,15 +220,24 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                     </div>
                 </div>
 
+                <div className="orderTime mt-[12px] flex flex-col justify-center">
+                    <div className="orderTimeText text-center text-[16px] font-[450]">Order Time</div>
+                    <hr className="text-center w-[70%] mt-[2px] ml-[15%] mr-[15%]" id="horizontalLine"></hr>
+                    <div className="orderTimeButton text-[16px] text-center rounded-[4px] mx-[10px] mt-[9px] px-[6px] py-[4px] hover:cursor-pointer"
+                        id={afterMarketOrder ? "chosenAfterMarketHoursButton" : "afterMarketHoursButton"} onClick={afterMarketHoursButtonClicked}>
+                        AFTER MARKET HOURS
+                    </div>
+                </div>
+
                 {
                     !toBuy ? <></> :
                     <div className="fundsAndPrice flex flex-row mt-[12px]">
-                        <div className="requiredFunds flex-grow text-center">
+                        <div className="requiredFunds flex-grow text-center truncate ...">
                             {requiredFunds == null ? "" : "Required: "}
                             {requiredFunds == null ? "" : <span className="rupeeSign mr-[2px]">&#8377;</span>}
                             {requiredFunds == null ? "" : requiredFunds}
                         </div>
-                        <div className="availableFunds flex-grow text-center">
+                        <div className="availableFunds flex-grow text-center truncate ...">
                             {availableFunds == null ? "" : "Available: "}
                             {availableFunds == null ? "" : <span className="rupeeSign mr-[2px]">&#8377;</span>}
                             {availableFunds == null ? "" : availableFunds}
