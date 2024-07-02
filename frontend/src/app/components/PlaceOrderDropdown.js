@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { usePlaceOrderDropdownStore } from '../../../zustand/usePlaceOrderDropdownStore';
+import { usePlaceOrderCautionMessageStore } from '../../../zustand/usePlaceOrderCautionMessageStore';
 import { signOut } from '../../../utils/UserProfile';
 import './styles/PlaceOrderDropdown.css';
 import axios from 'axios';
@@ -11,11 +11,12 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
     const {liveMarketDataOfOrderingStock, setDisplayPlaceOrderDropdown} = usePlaceOrderDropdownStore();
     const [product, setProduct] = useState('DELIVERY');
     const [orderType, setOrderType] = useState('MARKET');
-    const [afterMarketOrder, setAfterMarketOrder] = useState(false);
+    const [isAfterMarketOrder, setIsAfterMarketOrder] = useState(false);
     const [availableFunds, setAvailableFunds] = useState(null);
     const [requiredFunds, setRequiredFunds] = useState(null);
     const [stockQuantity, setStockQuantity] = useState(1);
     const [limitOrderPrice, setLimitOrderPrice] = useState(1);
+    const {setShowPlaceOrderCautionMessage, orderDetails, setOrderDetails} = usePlaceOrderCautionMessageStore();
 
     const products = ['DELIVERY', 'INTRADAY'];
     const orderTypes = ['MARKET', 'LIMIT'];
@@ -34,24 +35,16 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
         }
     }
 
-    const placeOrder = async (event) => {
-        console.log(event.target.id);
-
-        try {
-            const response = await axios.post('http://localhost:8088/user/placeOrder',
-            {
-
-            },
-            {
-                withCredentials: true
-            });
-            console.log(response);
+    const placeOrderButtonClicked = async (event) => {
+        const order = {
+            product: product,
+            orderType: orderType,
+            isAfterMarketOrder: isAfterMarketOrder,
+            stockQuantity: stockQuantity,
+            limitOrderPrice: limitOrderPrice
         }
-        // The user has to login again
-        catch(error) {
-            console.log(error);
-            //signOut();
-        }
+        setOrderDetails(order);
+        setShowPlaceOrderCautionMessage(true);
     }
 
     const closeButtonClicked = () => {
@@ -67,7 +60,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
     }
 
     const afterMarketHoursButtonClicked = (event) => {
-        setAfterMarketOrder(!afterMarketOrder);
+        setIsAfterMarketOrder(!isAfterMarketOrder);
     }
 
     const changeStockQuantity = (event) => {
@@ -223,8 +216,8 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                 <div className="orderTime mt-[12px] flex flex-col justify-center">
                     <div className="orderTimeText text-center text-[16px] font-[450]">Order Time</div>
                     <hr className="text-center w-[70%] mt-[2px] ml-[15%] mr-[15%]" id="horizontalLine"></hr>
-                    <div className="orderTimeButton text-[16px] text-center rounded-[4px] mx-[10px] mt-[9px] px-[6px] py-[4px] hover:cursor-pointer"
-                        id={afterMarketOrder ? "chosenAfterMarketHoursButton" : "afterMarketHoursButton"} onClick={afterMarketHoursButtonClicked}>
+                    <div className="orderTimeButton text-[16px] text-center rounded-[4px] mx-[15px] mt-[9px] px-[6px] py-[4px] hover:cursor-pointer"
+                        id={isAfterMarketOrder ? "chosenAfterMarketHoursButton" : "afterMarketHoursButton"} onClick={afterMarketHoursButtonClicked}>
                         AFTER MARKET HOURS
                     </div>
                 </div>
@@ -244,13 +237,24 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                         </div>
                     </div>
                 }
-
-                <div className={toBuy ? "mt-[5px] flex justify-center" : "mt-[15px] flex justify-center"}>
-                    <div className="placeOrderButton w-[90%] text-[16px] font-[500] rounded-[4px] mx-[10px] px-[6px] py-[4px] text-center hover:cursor-pointer"
-                        id={toBuy ? "buyButton" : "sellButton"} onClick={placeOrder}>
-                        {toBuy ? "BUY STOCK" : "SELL STOCK"}
+                {
+                    toBuy && requiredFunds > availableFunds ?
+                    <div className="notEnoughAvailableFundsMessage mt-[5px] mx-[10px] text-[17px] text-center italic"
+                        id="notEnoughAvailableFundsMessage">
+                        Please add more funds to your account to place this order
+                    </div> :
+                    orderType == 'LIMIT' && limitOrderPrice == 0 ?
+                    <div className="limitOrderPriceZeroMessage mt-[5px] mx-[10px] text-[17px] text-center italic"
+                        id="limitOrderPriceZeroMessage">
+                        Price cannot be 0
+                    </div> :
+                    <div className={toBuy ? "mt-[5px] flex justify-center" : "mt-[15px] flex justify-center"}>
+                        <div className="placeOrderButton w-[90%] text-[16px] font-[500] rounded-[4px] mx-[10px] px-[6px] py-[4px] text-center hover:cursor-pointer"
+                            id={toBuy ? "buyButton" : "sellButton"} onClick={placeOrderButtonClicked}>
+                            {toBuy ? "BUY STOCK" : "SELL STOCK"}
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     );

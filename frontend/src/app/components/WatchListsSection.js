@@ -129,6 +129,12 @@ export default function WatchListsSection() {
 
     const placeOrder = (event) => {
         const index = event.target.getAttribute('index');
+
+        // Live market data of the stock is not loaded yet
+        if (liveMarketData[currentWatchList.stocks[index].instrumentKey] == null) {
+            return;
+        }
+
         if (event.target.textContent == 'B') {
             setToBuy(true);
         }
@@ -230,7 +236,8 @@ export default function WatchListsSection() {
         }
         // The user has to login again
         catch(error) {
-            signOut();
+            console.log(error);
+            //signOut();
         }
 
         const name = instrumentKey.split('|')[1];

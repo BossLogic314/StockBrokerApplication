@@ -55,3 +55,7 @@
 #horizontalLine {
     border-color: black;
 }
+
+#notEnoughAvailableFundsMessage {
+    color: rgb(208, 18, 18);
+}

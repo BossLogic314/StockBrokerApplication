@@ -1,0 +1,28 @@
+#placeOrderCautionMessageOverlay {
+    background-color: rgb(0, 0, 0, 0.75);
+    color: white;
+}
+
+#orderSubmitButton {
+    border: 2px solid rgb(35, 137, 35);
+    background-color: rgb(249, 231, 231);
+    color: rgb(35, 137, 35);
+}
+
+#orderSubmitButton:hover {
+    border: 2px solid rgb(35, 137, 35);
+    background-color: rgb(35, 137, 35);
+    color: white;
+}
+
+#orderCancelButton {
+    border: 2px solid rgb(228, 50, 50);
+    background-color: rgb(249, 231, 231);
+    color: rgb(228, 50, 50);
+}
+
+#orderCancelButton:hover {
+    border: 2px solid rgb(228, 50, 50);
+    background-color: rgb(228, 50, 50);
+    color: white;
+}
