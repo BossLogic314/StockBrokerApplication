@@ -234,10 +234,9 @@ export default function WatchListsSection() {
             });
             candles = response.data.candles;
         }
-        // The user has to login again
+        // When unable to fetch candle data, not displaying anything
         catch(error) {
             console.log(error);
-            //signOut();
         }
 
         const name = instrumentKey.split('|')[1];

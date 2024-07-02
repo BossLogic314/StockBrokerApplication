@@ -57,9 +57,9 @@ export default function ChartsSection() {
             });
             candles = response.data.candles;
         }
-        // The user has to login again
+        // When unable to fetch candle data, not displaying anything
         catch(error) {
-            signOut();
+            console.log(error);
         }
 
         const obj = {
