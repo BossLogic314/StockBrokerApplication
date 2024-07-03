@@ -56,6 +56,6 @@
     border-color: black;
 }
 
-#notEnoughAvailableFundsMessage {
+#notEnoughAvailableFundsMessage, #limitOrderPriceZeroMessage {
     color: rgb(208, 18, 18);
 }

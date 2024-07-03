@@ -7,6 +7,7 @@ import { usePlaceOrderDropdownStore } from '../../../zustand/usePlaceOrderDropdo
 import { useWatchListStore } from '../../../zustand/useWatchListStore';
 import { useShowDeleteWatchListWarningStore } from '../../../zustand/useShowDeleteWatchListWarningStore';
 import { useChartsStore } from '../../../zustand/useChartsStore';
+import { useLiveMarketDataStore } from '../../../zustand/useLiveMarketDataStore';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import AddScriptDropdown from './AddScripDropdown';
@@ -33,7 +34,7 @@ export default function WatchListsSection() {
     const {toBuy, setToBuy, orderingStock, setOrderingStock, setLiveMarketDataOfOrderingStock,
             displayPlaceOrderDropdown, setDisplayPlaceOrderDropdown} = usePlaceOrderDropdownStore();
     const [socket, setSocket] = useState(null);
-    const [liveMarketData, setLiveMarketData] = useState([]);
+    const {liveMarketData, setLiveMarketData} = useLiveMarketDataStore();
     const {currentStock, setCurrentStock, setCurrentScale} = useChartsStore();
     const headerStocks =
         [
@@ -267,12 +268,7 @@ export default function WatchListsSection() {
         newSocket.on('market data', (updatedLiveMarketData) => {
 
             updatedLiveMarketData = JSON.parse(updatedLiveMarketData);
-            let liveMarketDataCopy = [...liveMarketData];
-
-            for (let i = 0; i < updatedLiveMarketData.length; ++i) {
-                liveMarketDataCopy[updatedLiveMarketData[i].instrumentKey] = updatedLiveMarketData[i];
-            }
-            setLiveMarketData(liveMarketDataCopy);
+            setLiveMarketData(updatedLiveMarketData);
         });
 
         setSocket(newSocket);

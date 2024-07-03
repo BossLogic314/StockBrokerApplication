@@ -29,9 +29,9 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
             });
             setAvailableFunds(response.data.fundsAndMargin.data.equity.available_margin.toFixed(2));
         }
-        // The user has to login again
+        // Unable to fetch this information
         catch(error) {
-            signOut();
+            console.log(error);
         }
     }
 
@@ -246,7 +246,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                     orderType == 'LIMIT' && limitOrderPrice == 0 ?
                     <div className="limitOrderPriceZeroMessage mt-[5px] mx-[10px] text-[17px] text-center italic"
                         id="limitOrderPriceZeroMessage">
-                        Price cannot be 0
+                        Price cannot be '0'
                     </div> :
                     <div className={toBuy ? "mt-[5px] flex justify-center" : "mt-[15px] flex justify-center"}>
                         <div className="placeOrderButton w-[90%] text-[16px] font-[500] rounded-[4px] mx-[10px] px-[6px] py-[4px] text-center hover:cursor-pointer"
