@@ -28,8 +28,8 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
     console.log('Client connected');
-    socket.on('market data', ({accessToken, instrumentKeys}) => {
-        getMarketDataFeed(accessToken, instrumentKeys,
+    socket.on('market data', ({accessToken, key, instrumentKeys}) => {
+        getMarketDataFeed(accessToken, key, instrumentKeys,
         (
             (data) => {
                 socket.emit('market data', data);

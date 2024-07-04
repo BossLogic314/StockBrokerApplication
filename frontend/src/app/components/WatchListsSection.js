@@ -295,6 +295,7 @@ export default function WatchListsSection() {
         newSocket.emit('market data',
         {
             accessToken: accessToken,
+            key: userData.email + '-watchlists-section',
             instrumentKeys: instrumentKeys
         });
     }
