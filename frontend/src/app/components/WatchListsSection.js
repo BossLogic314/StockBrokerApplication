@@ -263,15 +263,18 @@ export default function WatchListsSection() {
         if (currentWatchList == null) {
             return;
         }
-        const newSocket = io('http://localhost:8086/');
+        const newSocket = io('http://localhost:8086', {
+            query: {
+                key: userData.email + '-watchlists-section'
+            }
+        });
+        setSocket(newSocket);
 
         newSocket.on('market data', (updatedLiveMarketData) => {
 
             updatedLiveMarketData = JSON.parse(updatedLiveMarketData);
             setLiveMarketData(updatedLiveMarketData);
         });
-
-        setSocket(newSocket);
 
         let accessToken = null;
         // Getting the access token
@@ -307,9 +310,15 @@ export default function WatchListsSection() {
 
     // When the current watchlist changes
     useEffect(() => {
+
+        // Wait until the user's data is loaded
+        if (userData == null) {
+            return;
+        }
+
         // Establish a web socket connection to get live market data
         getLiveMarketData();
-    }, [currentWatchList]);
+    }, [currentWatchList, userData]);
 
     useEffect(() => {
 
