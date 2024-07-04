@@ -26,13 +26,19 @@ const io = new Server(server, {
     }
 });
 
+let keyToSocketMap = {};
+
 io.on('connection', (socket) => {
     console.log('Client connected');
+
+    const key = socket.handshake.query.key;
+    keyToSocketMap[key] = socket;
+
     socket.on('market data', ({accessToken, key, instrumentKeys}) => {
         getMarketDataFeed(accessToken, key, instrumentKeys,
         (
             (data) => {
-                socket.emit('market data', data);
+                keyToSocketMap[key].emit('market data', data);
             }
         ));
     })

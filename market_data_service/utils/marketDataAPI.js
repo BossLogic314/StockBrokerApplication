@@ -99,18 +99,18 @@ const decodeProfobuf = (buffer) => {
   return FeedResponse.decode(buffer);
 };
 
-let emailIdToSocketMap = {};
+let keyToSocketMap = {};
 
 // Initialize the protobuf part and establish the WebSocket connection
 export const getMarketDataFeed = (async (accessToken, key, instrumentKeys, callback) => {
   OAUTH2.accessToken = accessToken;
   try {
-    if (emailIdToSocketMap[key] != undefined) {
-      await emailIdToSocketMap[key].close();
+    if (keyToSocketMap[key] != undefined) {
+      await keyToSocketMap[key].close();
     }
     await initProtobuf(); // Initialize protobuf
     const wsUrl = await getMarketFeedUrl(); // Get the market feed URL
-    emailIdToSocketMap[key] = await connectWebSocket(wsUrl, instrumentKeys, callback); // Connect to the WebSocket
+    keyToSocketMap[key] = await connectWebSocket(wsUrl, instrumentKeys, callback); // Connect to the WebSocket
   }
   catch (error) {
     console.error("An error occurred:", error);
