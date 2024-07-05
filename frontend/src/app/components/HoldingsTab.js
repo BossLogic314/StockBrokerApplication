@@ -43,8 +43,10 @@ export default function HoldingsTab() {
 
         if (newCurrentAmount != 0) {
             setCurrentAmount(((newCurrentAmount * 100) / 100).toFixed(2));
-            setOverallProfitLossValue((newCurrentAmount - newInvestedAmount).toFixed(2));
-            setOverallProfitLossPercentage((((((newCurrentAmount - newInvestedAmount) / newInvestedAmount) * 100) * 100) / 100).toFixed(2));
+
+            const diff = newCurrentAmount - newInvestedAmount;
+            setOverallProfitLossValue(diff.toFixed(2));
+            setOverallProfitLossPercentage((((diff / newInvestedAmount * 100) * 100) / 100).toFixed(2));
         }
     });
 
@@ -79,6 +81,10 @@ export default function HoldingsTab() {
                         {
                             overallProfitLossValue == null || overallProfitLossPercentage == null ? "" :
                             <span className="rupeeSign mr-[2px]">&#8377;</span>
+                        }
+                        {
+                            overallProfitLossValue != null && overallProfitLossPercentage != null && overallProfitLossValue > 0 ?
+                            "+" : ""
                         }
                         {
                             overallProfitLossValue == null || overallProfitLossPercentage == null ? "" :
@@ -129,6 +135,7 @@ export default function HoldingsTab() {
                                 id={liveMarketData[element.instrument_token] != null && liveMarketData[element.instrument_token].ltp - element.average_price > 0 ?
                                 "positiveOverallProfitLossEntry" : "negativeOverallProfitLossEntry"}>
                                     {liveMarketData[element.instrument_token] == null ? "" : <span className="rupeeSign mr-[2px]">&#8377;</span>}
+                                    {liveMarketData[element.instrument_token] != null && liveMarketData[element.instrument_token].ltp - element.average_price > 0 ? "+" : ""}
                                     {
                                         liveMarketData[element.instrument_token] == null ? "" :
                                         ((((liveMarketData[element.instrument_token].ltp - element.average_price) * element.quantity) * 100) / 100).toFixed(2)
@@ -137,6 +144,10 @@ export default function HoldingsTab() {
                                 <div className="overallPercentageEntry flex flex-col justify-center items-center h-full w-[20%] min-w-[120px] truncate ..."
                                 id={liveMarketData[element.instrument_token] != null && liveMarketData[element.instrument_token].ltp - element.average_price > 0 ?
                                 "positiveOverallPercentageEntry" : "negativeOverallPercentageEntry"}>
+                                    {
+                                        liveMarketData[element.instrument_token] != null && liveMarketData[element.instrument_token].ltp - element.average_price > 0 ?
+                                        "+" : ""
+                                    }
                                     {
                                         liveMarketData[element.instrument_token] == null ? "" :
                                         (((
