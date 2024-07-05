@@ -171,20 +171,27 @@ export const placeOrder = (async (req, res) => {
     'Accept': 'application/json',
     'Authorization': `Bearer ${accessToken}`,
   };
-  
+
+  const quantity = req.query.quantity;
+  const price = req.query.price;
+  const instrumentToken = req.query.instrumentToken;
+  const orderType = req.query.orderType;
+  const triggerPrice = req.query.triggerPrice;
+  const transactionType = req.query.transactionType;
+  const isAfterMarketOrder = req.query.isAfterMarketOrder;
+
   const data = {
-    quantity: 1,
+    quantity: quantity,
     product: 'D',
     validity: 'DAY',
-    price: 10,
+    price: price,
     tag: 'string',
-    instrument_token: 'BSE_EQ|INE0CT101020',
-    //instrument_token: 'NSE_EQ|INE669E01016',
-    order_type: 'LIMIT',
-    transaction_type: 'SELL',
+    instrument_token: instrumentToken,
+    order_type: orderType,
+    transaction_type: transactionType,
     disclosed_quantity: 0,
-    trigger_price: 0,
-    is_amo: false,
+    trigger_price: triggerPrice,
+    is_amo: isAfterMarketOrder,
   };
   
   axios.post(url, data, { headers })
