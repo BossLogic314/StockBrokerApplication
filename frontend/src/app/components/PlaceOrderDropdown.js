@@ -8,6 +8,7 @@ import axios from 'axios';
 
 export default function PlaceOrderDropdown({stock, toBuy}) {
 
+    const [isDropdownLoading, setIsDropdownLoading] = useState(true);
     const {liveMarketDataOfOrderingStock, setDisplayPlaceOrderDropdown} = usePlaceOrderDropdownStore();
     const [product, setProduct] = useState('DELIVERY');
     const [orderType, setOrderType] = useState('MARKET');
@@ -33,6 +34,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
         catch(error) {
             console.log(error);
         }
+        setIsDropdownLoading(false);
     }
 
     const placeOrderButtonClicked = async (event) => {
@@ -107,6 +109,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
     }, []);
 
     return (
+        isDropdownLoading ? <></> :
         <div className="placeOrder h-full w-[30px] absolute top-0 left-[340px] w-[350px] flex flex-col z-10" id="placeOrder">
             <div className="header w-full h-[60px] flex flex-row border-black border-t-[1px] border-r-[1px] border-b-[1px]">
                 <div className="heading w-[85%] text-[22px] font-[400] pl-[12px] rounded-[5px] flex items-center">
@@ -238,6 +241,11 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                     </div>
                 }
                 {
+                    toBuy && availableFunds == null ?
+                    <div className="notEnoughAvailableFundsMessage mt-[5px] mx-[10px] text-[17px] text-center italic"
+                        id="notEnoughAvailableFundsMessage">
+                        Unable to fetch available funds from upstox's server at this hour. Please try again later, preferably during market hours
+                    </div> :
                     toBuy && requiredFunds > availableFunds ?
                     <div className="notEnoughAvailableFundsMessage mt-[5px] mx-[10px] text-[17px] text-center italic"
                         id="notEnoughAvailableFundsMessage">
