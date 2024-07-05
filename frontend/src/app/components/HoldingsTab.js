@@ -73,7 +73,7 @@ export default function HoldingsTab() {
 
                 <div className="overallProfitLossDiv flex flex-col justify-center items-center flex-grow px-[10px] py-[12px]">
                     <div className="overallProfitLossHeading text-[18px] font-[500]">Overall P&L</div>
-                    <div className="overallProfitLossAmount mt-[2px] text-[19px] font-[360]"
+                    <div className="overallProfitLossAmount mt-[2px] text-[18px] font-[450]"
                     id={overallProfitLossValue != null && overallProfitLossPercentage != null && overallProfitLossValue > 0 ?
                         "positiveOverallProfitLossAmount" : "negativeOverallProfitLossAmount"}>
                         {
