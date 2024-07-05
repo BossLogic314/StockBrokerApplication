@@ -65,9 +65,9 @@ const connectWebSocket = async (wsUrl, instrumentKeys, callback) => {
       const information = Object.keys(decodedData.feeds).map(
         (key) => ({
           instrumentKey: key,
-          ltp: decodedData.feeds[key]?.ff?.indexFF?.ltpc?.ltp,
-          open1D: decodedData.feeds[key]?.ff?.indexFF?.marketOHLC?.ohlc[0].open,
-          close1D: decodedData.feeds[key]?.ff?.indexFF?.marketOHLC?.ohlc[0].close
+          ltp: decodedData.feeds[key]?.ff?.indexFF == undefined ? decodedData.feeds[key]?.ff?.marketFF?.ltpc?.ltp : decodedData.feeds[key]?.ff?.indexFF?.ltpc?.ltp,
+          open1D: decodedData.feeds[key]?.ff?.indexFF == undefined ? decodedData.feeds[key]?.ff?.marketFF?.marketOHLC?.ohlc[0].open : decodedData.feeds[key]?.ff?.indexFF?.marketOHLC?.ohlc[0].open,
+          close1D: decodedData.feeds[key]?.ff?.indexFF == undefined ? decodedData.feeds[key]?.ff?.marketFF?.marketOHLC?.ohlc[0].close : decodedData.feeds[key]?.ff?.indexFF?.marketOHLC?.ohlc[0].close
         })
       );
       callback(JSON.stringify(information));

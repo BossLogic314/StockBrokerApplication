@@ -1,26 +1,19 @@
 import { useEffect, useState } from "react";
+import { useHoldingsStore } from '../../../zustand/useHoldingsStore';
+import { useLiveMarketDataStore } from '../../../zustand/useLiveMarketDataStore';
 import { signOut } from "../../../utils/UserProfile";
-import io from "socket.io-client";
 import axios from "axios";
 import './styles/HoldingsTab.css';
 
 export default function HoldingsTab() {
 
-    const [holdings, setHoldings] = useState([]);
+    const {holdings, setHoldings} = useHoldingsStore();
     const [investedAmount, setInvestedAmount] = useState(null);
     const [currentAmount, setCurrentAmount] = useState(null);
     const [overallProfitLossValue, setOverallProfitLossValue] = useState(null);
     const [overallProfitLossPercentage, setOverallProfitLossPercentage] = useState(null);
     const holdingsHeaderFields = ['Symbol', 'Net Qty', 'Avg. Price', 'LTP', 'Current Value', 'Overall P&L', 'Overall %'];
-    const [liveMarketData, setLiveMarketData] = useState({
-        'NSE_EQ|INE645W01026': {
-            ltp: 31.07
-        },
-        'NSE_EQ|INE669E01016': {
-            ltp: 17.89
-        }
-    });
-    const [socket, setSocket] = useState(null);
+    const {liveMarketData, setLiveMarketData} = useLiveMarketDataStore();
 
     const getHoldings = async () => {
         try {
@@ -37,14 +30,9 @@ export default function HoldingsTab() {
     }
 
     useEffect(() => {
-        getHoldings();
-    }, []);
-
-    useEffect(() => {
         let newInvestedAmount = 0;
         let newCurrentAmount = 0;
         for (let i = 0; i < holdings.length; ++i) {
-
             newInvestedAmount += (holdings[i].average_price * holdings[i].quantity);
 
             if (liveMarketData[holdings[i].instrument_token]) {
@@ -58,7 +46,11 @@ export default function HoldingsTab() {
             setOverallProfitLossValue((newCurrentAmount - newInvestedAmount).toFixed(2));
             setOverallProfitLossPercentage((((((newCurrentAmount - newInvestedAmount) / newInvestedAmount) * 100) * 100) / 100).toFixed(2));
         }
-    }, [holdings]);
+    });
+
+    useEffect(() => {
+        getHoldings();
+    }, []);
 
     return (
         <div className="flex flex-col flex-grow">
@@ -120,17 +112,17 @@ export default function HoldingsTab() {
                                 </div>
                                 <div className="averagePriceEntry flex flex-row justify-center items-center h-full w-[20%] min-w-[120px] truncate ...">
                                     <span className="rupeeSign mr-[2px]">&#8377;</span>
-                                    {element.average_price}
+                                    {element.average_price.toFixed(2)}
                                 </div>
                                 <div className="ltpEntry flex flex-row justify-center items-center h-full w-[20%] min-w-[120px] truncate ...">
                                     {liveMarketData[element.instrument_token] == null ? "" : <span className="rupeeSign mr-[2px]">&#8377;</span>}
-                                    {liveMarketData[element.instrument_token] == null ? "" : liveMarketData[element.instrument_token].ltp}
+                                    {liveMarketData[element.instrument_token] == null ? "" : liveMarketData[element.instrument_token].ltp.toFixed(2)}
                                 </div>
                                 <div className="currentValueEntry flex flex-row justify-center items-center h-full w-[20%] min-w-[120px] truncate ...">
                                     {liveMarketData[element.instrument_token] == null ? "" : <span className="rupeeSign mr-[2px]">&#8377;</span>}
                                     {
                                         liveMarketData[element.instrument_token] == null ? "" :
-                                        element.quantity * liveMarketData[element.instrument_token].ltp
+                                        (element.quantity * liveMarketData[element.instrument_token].ltp).toFixed(2)
                                     }
                                 </div>
                                 <div className="overallProfitLossEntry flex flex-row justify-center items-center h-full w-[20%] min-w-[120px] truncate ..."

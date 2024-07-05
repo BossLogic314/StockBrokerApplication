@@ -8,6 +8,7 @@ import { useWatchListStore } from '../../../zustand/useWatchListStore';
 import { useShowDeleteWatchListWarningStore } from '../../../zustand/useShowDeleteWatchListWarningStore';
 import { useChartsStore } from '../../../zustand/useChartsStore';
 import { useLiveMarketDataStore } from '../../../zustand/useLiveMarketDataStore';
+import { useHoldingsStore } from '../../../zustand/useHoldingsStore';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import AddScriptDropdown from './AddScripDropdown';
@@ -35,6 +36,7 @@ export default function WatchListsSection() {
             displayPlaceOrderDropdown, setDisplayPlaceOrderDropdown} = usePlaceOrderDropdownStore();
     const [socket, setSocket] = useState(null);
     const {liveMarketData, setLiveMarketData} = useLiveMarketDataStore();
+    const {holdings, setHoldings} = useHoldingsStore();
     const {currentStock, setCurrentStock, setCurrentScale} = useChartsStore();
     const headerStocks =
         [
@@ -265,7 +267,7 @@ export default function WatchListsSection() {
         }
         const newSocket = io('http://localhost:8086', {
             query: {
-                key: userData.email + '-watchlists-section'
+                key: userData.email
             }
         });
         setSocket(newSocket);
@@ -290,15 +292,18 @@ export default function WatchListsSection() {
             signOut();
         }
 
-        const instrumentKeys = currentWatchList.stocks.map(element => element.instrumentKey);
+        let instrumentKeys = currentWatchList.stocks.map(element => element.instrumentKey);
         for (let i = 0; i < headerStocks.length; ++i) {
             instrumentKeys.push(headerStocks[i].instrumentKey);
+        }
+        for (let i = 0; i < holdings.length; ++i) {
+            instrumentKeys.push(holdings[i].instrument_token);
         }
 
         newSocket.emit('market data',
         {
             accessToken: accessToken,
-            key: userData.email + '-watchlists-section',
+            key: userData.email,
             instrumentKeys: instrumentKeys
         });
     }
@@ -308,17 +313,16 @@ export default function WatchListsSection() {
         getWatchListsAndSetCurrentWatchList();
     }, [loading]);
 
-    // When the current watchlist changes
+    // When the current watchlist or holdings change
     useEffect(() => {
 
         // Wait until the user's data is loaded
         if (userData == null) {
             return;
         }
-
         // Establish a web socket connection to get live market data
         getLiveMarketData();
-    }, [currentWatchList, userData]);
+    }, [currentWatchList, holdings, userData]);
 
     useEffect(() => {
 
