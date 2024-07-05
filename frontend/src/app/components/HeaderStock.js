@@ -25,7 +25,7 @@ function HeaderStock({stock, liveMarketData}) {
                 <div className="growth h-[50%] text-[12px] flex justify-end truncate ..."
                     id={liveMarketData?.close1D > liveMarketData?.open1D ? "positiveGrowth" : "negativeGrowth"}>
                     {
-                        liveMarketData?.close1D > stock?.open1D ? ("+") : ("")
+                        liveMarketData?.close1D > liveMarketData?.open1D ? ("+") : ("")
                     }
                     {
                         liveMarketData ?
