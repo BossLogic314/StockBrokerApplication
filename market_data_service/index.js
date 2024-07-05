@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
         getMarketDataFeed(accessToken, key, instrumentKeys,
         (
             (data) => {
-                keyToSocketMap[key].emit('market data', data);
+                socket.emit('market data', data);
             }
         ));
     })
