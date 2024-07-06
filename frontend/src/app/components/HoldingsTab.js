@@ -54,6 +54,7 @@ export default function HoldingsTab() {
         getHoldings();
     }, []);
 
+    console.log(holdings);
     return (
         <div className="flex flex-col flex-grow">
             <div className="investmentDetailsDiv flex flex-row mt-[10px] mx-[20px]" id="investmentDetailsDiv">
@@ -111,7 +112,7 @@ export default function HoldingsTab() {
                             <div className="holding h-[65px] flex flex-row" key={index} id="holding">
                                 <div className="symbolEntry flex flex-col justify-center items-center h-full w-[20%] min-w-[120px]">
                                     <div className="symbolNameEntry text-[15px] font-[500] truncate ...">{element.tradingsymbol}</div>
-                                    <div className="symbolExchangeEntry text-[11px] font-[360] truncate ...">{`${element.exchange}_INDEX`}</div>
+                                    <div className="symbolExchangeEntry text-[11px] font-[360] truncate ...">{element.instrument_token.split('|')[0]}</div>
                                 </div>
                                 <div className="netQuantityEntry flex flex-col justify-center items-center h-full w-[20%] min-w-[120px] truncate ...">
                                     {element.quantity}
