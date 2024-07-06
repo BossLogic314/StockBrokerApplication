@@ -54,8 +54,8 @@ export default function OrdersTab() {
                             </div>
                             <div className="statusEntry flex justify-center items-center h-full w-[20%] min-w-[120px] truncate ...">
                                 <div className="statusText w-[100px] px-[12px] py-[4px] rounded-[10px] text-center truncate ..."
-                                    id={element.status == 'complete' ? 'complete' : element.status == 'cancelled' ? 'cancelled' : element.status == 'rejected' ? 'rejected' : 'amo'}>
-                                    {element.status == 'complete' ? 'Complete' : element.status == 'cancelled' ? 'Cancelled' : element.status == 'rejected' ? 'Rejected' : 'AMO'}
+                                    id={element.status == 'complete' ? 'complete' : element.status.startsWith('cancelled') ? 'cancelled' : element.status == 'rejected' ? 'rejected' : 'amo'}>
+                                    {element.status == 'complete' ? 'Complete' : element.status.startsWith('cancelled') ? 'Cancelled' : element.status == 'rejected' ? 'Rejected' : 'AMO'}
                                 </div>
                             </div>
                             <div className="quantityEntry flex justify-center items-center h-full w-[20%] min-w-[120px] truncate ...">
