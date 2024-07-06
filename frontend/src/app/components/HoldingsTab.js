@@ -54,7 +54,6 @@ export default function HoldingsTab() {
         getHoldings();
     }, []);
 
-    console.log(holdings);
     return (
         <div className="flex flex-col flex-grow">
             <div className="investmentDetailsDiv flex flex-row mt-[10px] mx-[20px]" id="investmentDetailsDiv">

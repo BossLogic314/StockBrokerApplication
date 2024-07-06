@@ -14,10 +14,11 @@ export default function PlaceOrderCautionMessage() {
             {
                 withCredentials: true
             });
+            alert('Order placed successfully! Please check in your orders tab');
         }
         // Something went wrong
         catch(error) {
-            alert('Something went wrong. Please check your order and try again!');
+            alert('Something went wrong. Please check your order, holdings and try again!');
         }
         setShowPlaceOrderCautionMessage(false);
     }
