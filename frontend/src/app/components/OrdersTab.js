@@ -44,7 +44,7 @@ export default function OrdersTab() {
                         <div className="order h-[65px] flex flex-row" key={index} id="order">
                             <div className="symbolEntry flex flex-col justify-center items-center h-full w-[20%] min-w-[120px]">
                                 <div className="symbolNameEntry text-[15px] font-[500] truncate ...">{element.tradingsymbol}</div>
-                                <div className="symbolExchangeEntry text-[11px] font-[360] truncate ...">{`${element.exchange}_INDEX`}</div>
+                                <div className="symbolExchangeEntry text-[11px] font-[360] truncate ...">{`${element.instrument_token.split('|')[0]}`}</div>
                             </div>
                             <div className="typeEntry flex justify-center items-center h-full w-[20%] min-w-[120px] truncate ...">
                                 <div className="typeText px-[12px] py-[4px] rounded-[10px] text-[16px] font-[500]"
