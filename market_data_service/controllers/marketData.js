@@ -1,4 +1,6 @@
 import axios from 'axios';
+import fs from "fs";
+import { parse } from "csv-parse";
 import { verifyJwtToken } from '../utils/jwtToken.js';
 import { openSearchClient } from '../opensearch/connect.js';
 import UpstoxClient from "upstox-js-sdk";
@@ -145,4 +147,34 @@ export const getScrips = (async (req, res) => {
   catch(error) {
     res.status(500).json({message: "Server error!"});
   }
+});
+
+export const loadData = (async (req, res) => {
+  let i = 0;
+  fs.createReadStream('complete.csv').pipe(parse({ delimiter: ',', quote: '"', columns: true })).on('data', async (row) => {
+
+    if (row['exchange'] == 'NSE_EQ' || row['exchange'] == 'BSE_EQ') {
+      try {
+        // Creating document to upload to opensearch
+        const document = {
+          instrumentKey: row['instrument_key'],
+          name: row['name'],
+          type: row['instrument_type'],
+          exchange: row['exchange']
+        }
+
+        const response = await openSearchClient.index({
+          index: 'stocks',
+          body: document,
+          refresh: true
+        });
+        console.log(`Uploaded ${i} -> ${row['name']}`);
+        i += 1;
+      }
+      catch(error) {
+        console.log(`Error: ${error}`);
+      }
+    }
+  });
+  res.status(200).json({message: "Successfully uploaded!"});
 });

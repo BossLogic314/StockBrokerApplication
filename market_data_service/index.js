@@ -1,6 +1,4 @@
 import express from 'express';
-import express_graphql from 'express-graphql';
-import { buildSchema } from 'graphql';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
