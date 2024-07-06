@@ -172,17 +172,17 @@ export const placeOrder = (async (req, res) => {
     'Authorization': `Bearer ${accessToken}`,
   };
 
-  const quantity = req.query.quantity;
-  const price = req.query.price;
-  const instrumentToken = req.query.instrumentToken;
-  const orderType = req.query.orderType;
-  const triggerPrice = req.query.triggerPrice;
-  const transactionType = req.query.transactionType;
-  const isAfterMarketOrder = req.query.isAfterMarketOrder;
+  const product = req.body.product;
+  const quantity = req.body.stockQuantity;
+  const price = req.body.price;
+  const instrumentToken = req.body.instrumentKey;
+  const orderType = req.body.orderType;
+  const transactionType = req.body.transactionType;
+  const isAfterMarketOrder = req.body.isAfterMarketOrder;
 
   const data = {
     quantity: quantity,
-    product: 'D',
+    product: product,
     validity: 'DAY',
     price: price,
     tag: 'string',
@@ -190,15 +190,17 @@ export const placeOrder = (async (req, res) => {
     order_type: orderType,
     transaction_type: transactionType,
     disclosed_quantity: 0,
-    trigger_price: triggerPrice,
+    trigger_price: 0,
     is_amo: isAfterMarketOrder,
   };
-  
+  console.log(`Order placed -> ${JSON.stringify(data)}`);
+
   axios.post(url, data, { headers })
     .then(response => {
-      console.log('Response:', response.data);
+      res.status(200).json({message: "Order successfully placed!"});
     })
     .catch(error => {
       console.error('Error:', error.message);
+      res.status(500).json({message: "Something went wrong!"});
     });
 });

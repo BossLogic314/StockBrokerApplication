@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { usePlaceOrderDropdownStore } from '../../../zustand/usePlaceOrderDropdownStore';
 import { usePlaceOrderCautionMessageStore } from '../../../zustand/usePlaceOrderCautionMessageStore';
-import { signOut } from '../../../utils/UserProfile';
 import './styles/PlaceOrderDropdown.css';
 import axios from 'axios';
 
@@ -39,11 +38,13 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
 
     const placeOrderButtonClicked = async (event) => {
         const order = {
-            product: product,
+            product: product.charAt(0),
+            stockQuantity: stockQuantity,
+            price: orderType == 'MARKET' ? 0 : requiredFunds / stockQuantity,
+            instrumentKey: stock.instrumentKey,
+            transactionType: toBuy ? 'BUY' : 'SELL',
             orderType: orderType,
             isAfterMarketOrder: isAfterMarketOrder,
-            stockQuantity: stockQuantity,
-            limitOrderPrice: limitOrderPrice
         }
         setOrderDetails(order);
         setShowPlaceOrderCautionMessage(true);

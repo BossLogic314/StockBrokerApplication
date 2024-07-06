@@ -15,10 +15,11 @@ export default function PlaceOrderCautionMessage() {
                 withCredentials: true
             });
         }
-        // The user has to login again
+        // Something went wrong
         catch(error) {
-            //signOut();
+            alert('Something went wrong. Please check your order and try again!');
         }
+        setShowPlaceOrderCautionMessage(false);
     }
 
     const closePlaceOrderCautionMessage = (event) => {
