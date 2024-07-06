@@ -14,15 +14,16 @@ function Stock({stock, index, stockClicked, hoveringOnStock, notHoveringOnStock,
 
     return (
         <div className="stock h-[65px] flex flex-row hover:cursor-pointer border-black border-b-[1px]"
-            id={currentStock != null && currentStock.instrumentKey == stock.instrumentKey ? "chosenStock" : "stock"} instrument-key={stock.instrumentKey} key={index} index={index}
+            id={currentStock != null && currentStock.instrumentKey == stock.instrumentKey ? "chosenStock" : "stock"}
+            instrument-key={stock.instrumentKey} name={stock.name} key={index} index={index}
             onMouseEnter={hoveringOnStock} onMouseLeave={notHoveringOnStock}
             onClick={stockClicked}>
             <div className="stockInformation min-w-[70%] flex flex-col justify-center pl-[10px] pr-[5px]"
-                index={index} instrument-key={stock.instrumentKey}>
-                <div className="name text-[17px] font-[450] truncate ..." index={index} instrument-key={stock.instrumentKey}>
+                index={index} instrument-key={stock.instrumentKey} name={stock.name}>
+                <div className="name text-[17px] font-[450] truncate ..." index={index} instrument-key={stock.instrumentKey} name={stock.name}>
                     {stock.name}
                 </div>
-                <div className="exchange text-[12px] font-[360] truncate ..." index={index} instrument-key={stock.instrumentKey}>
+                <div className="exchange text-[12px] font-[360] truncate ..." index={index} instrument-key={stock.instrumentKey} name={stock.name}>
                     {stock.exchange}
                 </div>
             </div>
@@ -54,7 +55,7 @@ function Stock({stock, index, stockClicked, hoveringOnStock, notHoveringOnStock,
                 ) :
                 (
                     <div className="stockEditOptions flex flex-row grow h-full w-[30%] justify-center items-center"
-                        instrument-key={stock.instrumentKey}>
+                        instrument-key={stock.instrumentKey} name={stock.name}>
                         <div className="buy mx-[5px] px-[5px] font-[450] rounded-[5px]"
                             id="buy" index={index} onClick={placeOrder}>
                             B
@@ -64,7 +65,7 @@ function Stock({stock, index, stockClicked, hoveringOnStock, notHoveringOnStock,
                             S
                         </div>
                         <i className="delete fa-solid fa-trash fa-lg h-[30px] w-[30px] mr-[8px] mt-[5px] pt-[12px] pl-[3px] ml-[5px] h-[30px] mr-[10px] px-[5px]"
-                            id="delete" instrument-key={stock.instrumentKey} onClick={deleteStockFromWatchList}>
+                            id="delete" instrument-key={stock.instrumentKey} name={stock.name} onClick={deleteStockFromWatchList}>
                         </i>
                     </div>
                 )

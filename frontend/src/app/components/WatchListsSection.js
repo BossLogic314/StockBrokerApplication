@@ -216,7 +216,7 @@ export default function WatchListsSection() {
         setEditingWatchListName(false);
     }
 
-    const stockClicked = async (event = null, instrumentKey = null) => {
+    const stockClicked = async (event = null, instrumentKey = null, name = null) => {
 
         cancelChangeOfWatchListName();
 
@@ -228,6 +228,10 @@ export default function WatchListsSection() {
         if (instrumentKey == null) {
             instrumentKey = event.target.getAttribute('instrument-key');
         }
+        if (name == null) {
+            name = event.target.getAttribute('name');
+        }
+
         let candles = null;
         try {
             const response = await axios.get(
@@ -242,7 +246,6 @@ export default function WatchListsSection() {
             console.log(error);
         }
 
-        const name = instrumentKey.split('|')[1];
         const obj = {
             instrumentKey: instrumentKey,
             name: name,
@@ -326,7 +329,7 @@ export default function WatchListsSection() {
 
     useEffect(() => {
 
-        stockClicked(null, headerStocks[0].instrumentKey);
+        stockClicked(null, headerStocks[0].instrumentKey, headerStocks[0].name);
 
         const script = document.createElement("script");
         script.src = "https://kit.fontawesome.com/13ecd81147.js";
