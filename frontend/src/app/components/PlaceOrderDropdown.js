@@ -28,7 +28,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
             {
                 withCredentials: true
             });
-            setAvailableFunds(response.data.fundsAndMargin.data.equity.available_margin.toFixed(2));
+            setAvailableFunds(Number(response.data.fundsAndMargin.data.equity.available_margin.toFixed(2)));
         }
         // Unable to fetch this information
         catch(error) {
@@ -96,11 +96,11 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                 return;
             }
             const newRequiredFundsValue = (stockQuantity * liveMarketDataOfOrderingStock.ltp).toFixed(2);
-            setRequiredFunds(newRequiredFundsValue);
+            setRequiredFunds(Number(newRequiredFundsValue));
         }
         else {
             const newRequiredFundsValue = (stockQuantity * limitOrderPrice).toFixed(2);
-            setRequiredFunds(newRequiredFundsValue);
+            setRequiredFunds(Number(newRequiredFundsValue));
         }
     }, [stockQuantity, orderType, limitOrderPrice, liveMarketDataOfOrderingStock])
 
