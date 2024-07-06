@@ -44,7 +44,7 @@ function Stock({stock, index, stockClicked, hoveringOnStock, notHoveringOnStock,
                                 liveMarketData?.close1D > liveMarketData?.open1D ? ("+") : ("")
                             }
                             {
-                                liveMarketData ?
+                                liveMarketData && liveMarketData?.open1D != 0 ?
                                 ((liveMarketData?.close1D - liveMarketData?.open1D) /
                                     liveMarketData?.open1D * 100).toFixed(2) + "%" :
                                 ""

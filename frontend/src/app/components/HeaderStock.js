@@ -28,7 +28,7 @@ function HeaderStock({stock, liveMarketData}) {
                         liveMarketData?.close1D > liveMarketData?.open1D ? ("+") : ("")
                     }
                     {
-                        liveMarketData ?
+                        liveMarketData && liveMarketData.open1D != 0 ?
                         ((liveMarketData?.close1D - liveMarketData?.open1D) / liveMarketData?.open1D * 100).toFixed(2) + "%" :
                         ""
                     }
