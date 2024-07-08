@@ -18,7 +18,7 @@ export default function PlaceOrderCautionMessage() {
         }
         // Something went wrong
         catch(error) {
-            alert('Something went wrong. Please check your order, holdings and try again!');
+            alert('Something went wrong. Please check your order, available funds, holdings and try again!');
         }
         setShowPlaceOrderCautionMessage(false);
     }
