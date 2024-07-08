@@ -140,7 +140,7 @@ export default function PlaceOrderDropdown({stock, toBuy}) {
                     <div className="price h-[50%] text-[16px] pt-[7px] font-[450] flex justify-end truncate ..."
                     id={liveMarketDataOfOrderingStock?.close1D > liveMarketDataOfOrderingStock?.open1D ? "positivePrice" : "negativePrice"}>
                         {liveMarketDataOfOrderingStock == null ? "" : <span className="rupeeSign mr-[2px]">&#8377;</span>}
-                        {liveMarketDataOfOrderingStock == null ? "" : liveMarketDataOfOrderingStock.ltp}
+                        {liveMarketDataOfOrderingStock == null ? "" : liveMarketDataOfOrderingStock.ltp.toFixed(2)}
                     </div>
                     <div className="growth h-[50%] text-[13px] flex justify-end truncate ..."
                         id={liveMarketDataOfOrderingStock?.close1D > liveMarketDataOfOrderingStock?.open1D ?

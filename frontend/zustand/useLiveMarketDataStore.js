@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { usePlaceOrderDropdownStore } from './usePlaceOrderDropdownStore';
 
 const liveMarketDataStore = (set, get) => ({
     liveMarketData: {},
@@ -8,6 +9,10 @@ const liveMarketDataStore = (set, get) => ({
 
         for (let i = 0; i < updatedLiveMarketData.length; ++i) {
             liveMarketDataCopy[updatedLiveMarketData[i].instrumentKey] = updatedLiveMarketData[i];
+
+            if (updatedLiveMarketData[i].instrumentKey == usePlaceOrderDropdownStore.getState().orderingStock?.instrumentKey) {
+                usePlaceOrderDropdownStore.setState({liveMarketDataOfOrderingStock: updatedLiveMarketData[i]});
+            }
         }
 
         set({liveMarketData: liveMarketDataCopy});
