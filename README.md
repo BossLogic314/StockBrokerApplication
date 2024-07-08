@@ -1,13 +1,6 @@
 # Stock Broker Application
 An application to fetch real-time market data and trade stocks.
 
-## How to run the app
-1. Clone the repository
-2. Startup each microservice -\
-&nbsp; run `npm install && npm start` in the folders `auth_service` and `market_data_service`, `user_manager_service`, `watchlist_manager_service`\
-&nbsp; run `npm install && npm run dev` in the folder `frontend`
-3. The application should now be running on your host, listening on port 3000. URL to access the application : `http://localhost:3000`
-
 ## Login page
 ![StockBrokerApplicationLoginPage](https://github.com/BossLogic314/StockBrokerApplication/assets/73065560/ec39409c-cb98-461b-8e15-756b5283ebbd)
 
