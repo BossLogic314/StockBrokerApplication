@@ -252,7 +252,6 @@ export default function WatchListsSection() {
             candles: candles
         }
         setCurrentStock(obj);
-        setCurrentScale('1 min');
     }
 
     const getWatchListsAndSetCurrentWatchList = async () => {

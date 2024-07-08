@@ -87,13 +87,13 @@ export default function ChartsSection() {
                             (
                                 currentScale == element ?
                                 (
-                                    <div className="1min rounded-[4px] ml-[15px] mr-[5px] px-[5px] text-[15px] hover:cursor-pointer border-black border-[1px]"
+                                    <div className="rounded-[4px] ml-[15px] mr-[5px] px-[5px] text-[15px] hover:cursor-pointer border-black border-[1px]"
                                         id="chosenScale" onClick={changeScale} key={element}>
                                         {element}
                                     </div>
                                 ) :
                                 (
-                                    <div className="1min rounded-[4px] ml-[15px] mr-[5px] px-[5px] text-[15px] hover:cursor-pointer border-black border-[1px]"
+                                    <div className="rounded-[4px] ml-[15px] mr-[5px] px-[5px] text-[15px] hover:cursor-pointer border-black border-[1px]"
                                         id="scale" onClick={changeScale} key={element}>
                                         {element}
                                     </div>
